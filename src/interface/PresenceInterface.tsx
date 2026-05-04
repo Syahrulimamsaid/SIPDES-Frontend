@@ -6,6 +6,7 @@ export interface Presence {
   userId: string;
   locationId: string;
 
+  date?: string;
   in?: string;
   out?: string;
 
@@ -15,8 +16,8 @@ export interface Presence {
   out_long?: number;
   status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti"| "";
 
-  User?: User;
-  Location?: Location;
+  user?: User;
+  location?: Location;
 }
 
 export interface PresenceCreate {
