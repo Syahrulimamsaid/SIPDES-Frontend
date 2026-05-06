@@ -56,7 +56,7 @@ function Presence() {
     try {
       setLoadingMap((prev) => ({ ...prev, [locationId]: true }));
       const loc = await getLocation();
-
+      
       const data = await locationController.check(
         localStorage.getItem("token") || "",
         loc.lat,

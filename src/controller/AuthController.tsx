@@ -1,10 +1,11 @@
 import API from "../config/API";
 class AuthController {
-  async login(phone_number: string, password: string) {
+  async login(phone_number: string, password: string, device:string) {
     try {
       const login = await API.post("/auth/sign-in", {
         phone_number: phone_number,
         password: password,
+        device: device,
       });
 
       localStorage.setItem("phone_number", login.data.phone_number);

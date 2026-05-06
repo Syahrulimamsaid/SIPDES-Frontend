@@ -3,7 +3,8 @@ import Config from "../config/Config";
 
 const API = Axios.create({
   baseURL: Config.API_URL,
-  headers: { "Content-Type": "Application/json" },
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 API.interceptors.response.use(
@@ -11,9 +12,8 @@ API.interceptors.response.use(
     return response;
   },
   (error: unknown) => {
-    
     return Promise.reject(error);
-  }
+  },
 );
 
 export default API;

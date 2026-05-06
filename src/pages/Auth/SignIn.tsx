@@ -6,6 +6,7 @@ import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../../components/ui/button/Button";
+import FingerPrint from "@fingerprintjs/fingerprintjs";
 
 interface Auth {
   phone: string;
@@ -27,10 +28,7 @@ function SignIn() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
-    console.log("PWA hook mounted");
-
     const handler = (e: any) => {
-      console.log("beforeinstallprompt triggered");
       e.preventDefault();
       setDeferredPrompt(e);
     };
@@ -56,16 +54,27 @@ function SignIn() {
     setAuth((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getDevice = async () => {
+    const fpPromise = FingerPrint.load();
+    const fp = await fpPromise;
+    const result = await fp.get();
+    return result.visitorId;
+  };
+
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await authController.login(auth.phone, auth.password);
+      await authController.login(auth.phone, auth.password, await getDevice());
       Toast({ message: "Login Success", variant: "success" });
       navigate("/");
     } catch (err: unknown) {
-      Toast({ message: err.response.data.message, variant: "error" });
+      if (err.response.data.message) {
+        Toast({ message: err.response.data.message, variant: "error" });
+      } else {
+        Toast({ message: err.response.data, variant: "error" });
+      }
     } finally {
       setLoading(false);
     }

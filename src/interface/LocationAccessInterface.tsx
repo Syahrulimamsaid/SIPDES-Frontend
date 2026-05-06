@@ -7,7 +7,7 @@ export interface LocationAccess {
   userId?: string;
   locationId: string;
   description?: string;
-  isInside?: boolean;
+  isInside?: booleans;
   
   // relations
   user?: User;
