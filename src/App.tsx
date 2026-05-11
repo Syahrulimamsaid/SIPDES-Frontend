@@ -10,6 +10,8 @@ import GuestOnly from "./Middleware/GuestMiddleware";
 import Presence from "./pages/Presence/Index";
 import Record from "./pages/Record/Index";
 import Profile from "./pages/Profile/Index";
+import RecordDetail from "./pages/Record/Detail";
+import About from "./pages/About";
 
 export default function App() {
   return (
@@ -23,8 +25,12 @@ export default function App() {
           <Route element={<AuthMiddleware />} path="/">
             <Route element={<AppMobileLayout />} path="/">
               <Route index path="/" element={<Presence />} />
+              
               <Route path="/record" element={<Record />} />
+              <Route path="/record/detail/:id" element={<RecordDetail />} />
+              
               <Route path="/profile" element={<Profile />} />
+              <Route path="/about" element={<About />} />
             </Route>
 
             {/* <Route element={<AppLayout />} path="/"> */}

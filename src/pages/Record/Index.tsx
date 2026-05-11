@@ -4,8 +4,10 @@ import Button from "../../components/ui/button/Button";
 import PresenceController from "../../controller/PresenceController";
 import { Presence } from "../../interface/PresenceInterface";
 import { Toast } from "../../components/ui/alert/Toast";
+import { useNavigate } from "react-router";
 
 function Record() {
+  const navigate = useNavigate();
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [records, setRecords] = useState<Presence[]>([]);
@@ -34,7 +36,11 @@ function Record() {
   const statusColor = {
     hadir: "bg-green-100 text-green-700",
     terlambat: "bg-yellow-100 text-yellow-700",
-    "tidak hadir": "bg-red-100 text-red-700",
+    alpa: "bg-red-100 text-red-700",
+    cuti: "bg-blue-100 text-blue-700",
+    pulang: "bg-purple-100 text-purple-700",
+    masuk: "bg-gray-100 text-gray-700",
+    "": "bg-gray-100 text-gray-700",
   };
 
   return (
@@ -108,7 +114,7 @@ function Record() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-sm font-semibold text-gray-800 dark:text-white">
-                      {item.location?.name}
+                      {item.location_access?.description}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
                       <Calendar size={14} />
@@ -119,7 +125,8 @@ function Record() {
                   <span
                     className={`text-[10px] px-2 py-1 rounded-full font-medium ${statusColor[item.status]}`}
                   >
-                    {item.status.toLocaleUpperCase()}
+                    {item.status.charAt(0).toUpperCase() +
+                      item.status.slice(1).toLowerCase()}
                   </span>
                 </div>
 
@@ -129,7 +136,9 @@ function Record() {
                     <div>
                       <p className="text-gray-500">Masuk</p>
                       <p className="font-semibold text-gray-800 dark:text-white">
-                        {item.in != null ? new Date(item.in).toTimeString().slice(0, 5) : '-'}
+                        {item.in != null
+                          ? new Date(item.in).toTimeString().slice(0, 5)
+                          : "-"}
                       </p>
                     </div>
                   </div>
@@ -139,7 +148,9 @@ function Record() {
                     <div>
                       <p className="text-gray-500">Pulang</p>
                       <p className="font-semibold text-gray-800 dark:text-white">
-                       {item.out != null ?  new Date(item.out).toTimeString().slice(0, 5) : '-'}
+                        {item.out != null
+                          ? new Date(item.out).toTimeString().slice(0, 5)
+                          : "-"}
                       </p>
                     </div>
                   </div>
@@ -149,15 +160,13 @@ function Record() {
                   <div className="flex items-center gap-2 text-gray-500 truncate">
                     <MapPin size={14} />
                     <span className="truncate max-w-40">
-                      {item.location?.name}
+                      {item.location_access?.location?.name}
                     </span>
                   </div>
 
                   <button
                     className="flex items-center gap-1 text-blue-600 hover:text-indigo-600 transition"
-                    onClick={() => {
-                      console.log("preview lokasi:", item);
-                    }}
+                    onClick={() => navigate(`/record/detail/${item.id}`)}
                   >
                     Lihat
                   </button>

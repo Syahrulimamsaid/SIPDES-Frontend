@@ -1,5 +1,5 @@
 import { User } from "./UserInterface";
-import { Location } from "./LocationInterface";
+import { LocationAccess } from "./LocationAccessInterface";
 
 export interface Presence {
   id: string;
@@ -14,14 +14,14 @@ export interface Presence {
   in_long?: number;
   out_lat?: number;
   out_long?: number;
-  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti"| "";
+  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti"| "pulang" | "";
 
   user?: User;
-  location?: Location;
+  location_access?: LocationAccess;
 }
 
 export interface PresenceCreate {
   lat?: number;
   lng?: number;
-  locationId: string;
+  locationAccessId: string;
 }

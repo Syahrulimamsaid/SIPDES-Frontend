@@ -56,7 +56,7 @@ function Presence() {
     try {
       setLoadingMap((prev) => ({ ...prev, [locationId]: true }));
       const loc = await getLocation();
-      
+
       const data = await locationController.check(
         localStorage.getItem("token") || "",
         loc.lat,
@@ -76,7 +76,7 @@ function Presence() {
   };
 
   const handlePresence = async (data: LocationAccess) => {
-    const locationId = data.location?.id || "";
+    const locationAccessId = data.id || "";
 
     try {
       const presence = await presenceController.presence(
@@ -84,7 +84,7 @@ function Presence() {
         {
           lat: data.location?.lat,
           lng: data.location?.lng,
-          locationId,
+          locationAccessId,
         },
       );
 
@@ -220,7 +220,7 @@ function Presence() {
                         Presensi{" "}
                         {loc.presence?.status == "" ? "Masuk" : "Pulang"}
                       </Button>
-                    ) : loc.presence?.status != "hadir" ? (
+                    ) : loc.presence?.status != "hadir" && loc.presence?.status != "pulang" ? (
                       <Button
                         size="sm"
                         className="w-full"
@@ -237,7 +237,8 @@ function Presence() {
                           "Cek Lokasi"
                         )}
                       </Button>
-                    ) : loc.presence?.status == "hadir" ? (
+                    ) : loc.presence?.status == "hadir" ||
+                      loc.presence?.status == "pulang" ? (
                       <div className="w-full flex items-center justify-between bg-green-50 border border-green-200 text-green-700 px-3 py-2 rounded-lg text-xs">
                         <span>Presensi hari ini sudah tercatat</span>
                         <span className="font-medium">✔</span>

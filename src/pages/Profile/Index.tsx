@@ -8,6 +8,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { ThemeToggleButton } from "../../components/common/ThemeToggleButton";
+import { useNavigate } from "react-router";
 
 interface UserInterface {
   id: string;
@@ -20,6 +21,7 @@ interface UserInterface {
 }
 
 function Profile() {
+  const navigate = useNavigate();
   const [user, setUser] = useState<UserInterface | null>(null);
 
   const getUser = () => {
@@ -43,14 +45,11 @@ function Profile() {
       <div className="w-full max-w-md md:max-w-2xl">
         <div className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-5 pt-8 pb-20 rounded-b-3xl shadow">
           <h1 className="text-lg font-semibold">Profil</h1>
-          <p className="text-xs text-white/80">
-            Informasi akun dan pengaturan
-          </p>
+          <p className="text-xs text-white/80">Informasi akun dan pengaturan</p>
         </div>
 
         <div className="px-4 -mt-16">
           <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-lg">
-
             <div className="flex items-center gap-4">
               <div className="bg-indigo-100 text-indigo-600 p-4 rounded-2xl">
                 <User size={28} />
@@ -85,9 +84,7 @@ function Profile() {
                   <User size={18} />
                   <span className="text-sm">Nama Lengkap</span>
                 </div>
-                <span className="text-xs text-gray-500">
-                  {user?.fullname}
-                </span>
+                <span className="text-xs text-gray-500">{user?.fullname}</span>
               </div>
 
               <div className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
@@ -132,7 +129,12 @@ function Profile() {
                 </div>
                 <ChevronRight size={16} className="text-gray-400" />
               </div>
-              <div className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer">
+              <div
+                className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer"
+                onClick={() => {
+                  navigate("/about");
+                }}
+              >
                 <div className="flex items-center gap-3">
                   <Settings size={18} />
                   <span className="text-sm">Tentang Aplikasi</span>

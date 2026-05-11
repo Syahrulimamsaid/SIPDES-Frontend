@@ -38,7 +38,7 @@ function AppMobileLayout() {
           <button
             onClick={() => navigate("/profile")}
             className={`flex flex-col items-center text-xs ${
-              isActive("/setting") ? "text-brand -600" : "text-gray-500"
+              isActive("/profile") ? "text-brand-600" : "text-gray-500"
             }`}
           >
             <User size={20} />
