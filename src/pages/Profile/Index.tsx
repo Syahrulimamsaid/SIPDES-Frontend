@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { ThemeToggleButton } from "../../components/common/ThemeToggleButton";
 import { useNavigate } from "react-router";
+import ConfirmDialog from "../../components/custom/ConfirmModal";
 
 interface UserInterface {
   id: string;
@@ -143,16 +144,23 @@ function Profile() {
               </div>
             </div>
           </div>
-          <button
-            onClick={() => {
+          <ConfirmDialog
+            title="Konfirmasi"
+            description="Apakah yakin akan keluar ?"
+            labelYes="Iya"
+            labelNo="Tidak"
+            onYes={() => {
               localStorage.clear();
               window.location.href = "/auth/signin";
             }}
-            className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            <LogOut size={16} />
-            Keluar
-          </button>
+            buttonClass="w-full gap-2 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
+            buttonChild={
+              <div className="flex items-center justify-center">
+                <LogOut size={16} className="me-2"/>
+                Keluar 
+              </div>
+            }
+          />
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import API from "../config/API";
+import { Notification } from "../interface/NotificationInterface";
 import { Presence, PresenceCreate } from "../interface/PresenceInterface";
 
 class PresenceController {
@@ -23,6 +24,16 @@ class PresenceController {
           Authorization: `Bearer ${token}`,
         },
       });
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+    async getByProcess(): Promise<Notification[]> {
+    try {
+      const result = await API.get(`/presence/process`);
       return result.data;
     } catch (e) {
       console.error(e);

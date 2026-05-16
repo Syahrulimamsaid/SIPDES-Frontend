@@ -20,7 +20,7 @@ async function init() {
           <App />
         </AppWrapper>
       </ThemeProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 }
 

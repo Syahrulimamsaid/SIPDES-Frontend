@@ -5,7 +5,13 @@ function AppMobileLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+
+    return location.pathname.includes(path);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex justify-center">
@@ -28,7 +34,7 @@ function AppMobileLayout() {
           <button
             onClick={() => navigate("/record")}
             className={`flex flex-col items-center text-xs ${
-              isActive("/record") ? "text-brand-600" : "text-gray-500"
+              isActive("record") ? "text-brand-600" : "text-gray-500"
             }`}
           >
             <ClipboardList size={20} />
@@ -38,13 +44,12 @@ function AppMobileLayout() {
           <button
             onClick={() => navigate("/profile")}
             className={`flex flex-col items-center text-xs ${
-              isActive("/profile") ? "text-brand-600" : "text-gray-500"
+              isActive("profile") ? "text-brand-600" : "text-gray-500"
             }`}
           >
             <User size={20} />
             Profile
           </button>
-
         </div>
       </div>
     </div>

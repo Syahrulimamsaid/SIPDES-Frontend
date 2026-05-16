@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { MapPin, User, Phone, CheckCircle, XCircle } from "lucide-react";
+import { MapPin, User, Phone, CheckCircle, XCircle,  } from "lucide-react";
 import { User as UserInterface } from "../../interface/UserInterface";
 import Button from "../../components/ui/button/Button";
-import { ThemeToggleButton } from "../../components/common/ThemeToggleButton";
 import { LocationAccess } from "../../interface/LocationAccessInterface";
 import LocationController from "../../controller/LocationController";
 import { getLocation } from "../../helpers/GetLocation";
 import PresenceController from "../../controller/PresenceController";
 import { Toast } from "../../components/ui/alert/Toast";
+import ConfirmDialog from "../../components/custom/ConfirmModal";
+import Notification from "./Notification/Notification";
 
 function Presence() {
   const [user, setUser] = useState<UserInterface | null>(null);
@@ -111,15 +112,18 @@ function Presence() {
               </p>
             </div>
 
-            <button
-              onClick={() => {
+            <ConfirmDialog
+              title="Logout"
+              description="Apakah yakin akan keluar ?"
+              labelYes="Iya"
+              labelNo="Tidak"
+              onYes={() => {
                 localStorage.clear();
                 window.location.href = "/auth/signin";
               }}
-              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition"
-            >
-              Logout
-            </button>
+              buttonClass="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition"
+              buttonChild={"Logout"}
+            />
           </div>
 
           <div className="absolute left-4 right-4 -bottom-14">
@@ -139,7 +143,7 @@ function Presence() {
                   </p>
                 </div>
 
-                <ThemeToggleButton />
+                <Notification/>
               </div>
 
               <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
@@ -209,7 +213,8 @@ function Presence() {
                       </div>
                     )}
 
-                    {isValid &&
+                    {
+                    isValid &&
                     (loc.presence?.status == "masuk" ||
                       loc.presence?.status == "") ? (
                       <Button
@@ -220,7 +225,8 @@ function Presence() {
                         Presensi{" "}
                         {loc.presence?.status == "" ? "Masuk" : "Pulang"}
                       </Button>
-                    ) : loc.presence?.status != "hadir" && loc.presence?.status != "pulang" ? (
+                    ) : loc.presence?.status != "hadir" &&
+                      loc.presence?.status != "pulang" ? (
                       <Button
                         size="sm"
                         className="w-full"
