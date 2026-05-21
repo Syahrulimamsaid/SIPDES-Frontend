@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
-import { MapPin, User, Phone, CheckCircle, XCircle,  } from "lucide-react";
-import { User as UserInterface } from "../../interface/UserInterface";
-import Button from "../../components/ui/button/Button";
-import { LocationAccess } from "../../interface/LocationAccessInterface";
-import LocationController from "../../controller/LocationController";
-import { getLocation } from "../../helpers/GetLocation";
-import PresenceController from "../../controller/PresenceController";
-import { Toast } from "../../components/ui/alert/Toast";
-import ConfirmDialog from "../../components/custom/ConfirmModal";
-import Notification from "./Notification/Notification";
+import { useEffect, useRef, useState } from "react";
+import { MapPin, User, Phone, CheckCircle, XCircle } from "lucide-react";
+import { User as UserInterface } from "../../../interface/UserInterface";
+import Button from "../../../components/ui/button/Button";
+import { LocationAccess } from "../../../interface/LocationAccessInterface";
+import LocationController from "../../../controller/LocationController";
+import { getLocation } from "../../../helpers/GetLocation";
+import PresenceController from "../../../controller/PresenceController";
+import { Toast } from "../../../components/ui/alert/Toast";
+import ConfirmDialog from "../../../components/custom/ConfirmModal";
+import Notification, { NotificationRef } from "./Notification/Notification";
+import AuthController from "../../../controller/AuthController";
 
 function Presence() {
+  const notifRef = useRef<NotificationRef>(null);
+
   const [user, setUser] = useState<UserInterface | null>(null);
   const [locations, setLocations] = useState<LocationAccess[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,6 +25,7 @@ function Presence() {
 
   const locationController = new LocationController();
   const presenceController = new PresenceController();
+  const authController = new AuthController();
 
   const getUser = async () => {
     setUser({
@@ -67,10 +71,26 @@ function Presence() {
 
       setValidLocation((prev) => ({
         ...prev,
-        [locationId]: data.isInside,
+        [locationId]: data.isInside ?? false,
       }));
-    } catch (err: any) {
-      console.log(err.message);
+    } catch (err: unknown) {
+      let message = "Internal Server Error";
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+
+      if (error?.response?.data?.message) {
+        message = error.response.data.message;
+      }
+
+      Toast({
+        message,
+        variant: "error",
+      });
     } finally {
       setLoadingMap((prev) => ({ ...prev, [locationId]: false }));
     }
@@ -97,6 +117,8 @@ function Presence() {
       getLocations();
     } catch (e) {
       console.error(e);
+    } finally {
+      await notifRef.current?.getNotif();
     }
   };
 
@@ -117,8 +139,8 @@ function Presence() {
               description="Apakah yakin akan keluar ?"
               labelYes="Iya"
               labelNo="Tidak"
-              onYes={() => {
-                localStorage.clear();
+              onYes={async () => {
+                await authController.logout();
                 window.location.href = "/auth/signin";
               }}
               buttonClass="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition"
@@ -143,7 +165,7 @@ function Presence() {
                   </p>
                 </div>
 
-                <Notification/>
+                <Notification />
               </div>
 
               <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
@@ -213,8 +235,7 @@ function Presence() {
                       </div>
                     )}
 
-                    {
-                    isValid &&
+                    {isValid &&
                     (loc.presence?.status == "masuk" ||
                       loc.presence?.status == "") ? (
                       <Button

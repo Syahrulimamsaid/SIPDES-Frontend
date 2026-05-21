@@ -14,7 +14,7 @@ export interface Presence {
   in_long?: number;
   out_lat?: number;
   out_long?: number;
-  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti"| "pulang" | "";
+  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti" | "pulang" | "";
 
   user?: User;
   location_access?: LocationAccess;
@@ -24,4 +24,9 @@ export interface PresenceCreate {
   lat?: number;
   lng?: number;
   locationAccessId: string;
+}
+
+export interface PresenceResponse {
+  type: "IN" | "OUT";
+  data: Presence;
 }

@@ -7,9 +7,10 @@ import {
   LogOut,
   ChevronRight,
 } from "lucide-react";
-import { ThemeToggleButton } from "../../components/common/ThemeToggleButton";
+import { ThemeToggleButton } from "../../../components/common/ThemeToggleButton";
 import { useNavigate } from "react-router";
-import ConfirmDialog from "../../components/custom/ConfirmModal";
+import ConfirmDialog from "../../../components/custom/ConfirmModal";
+import AuthController from "../../../controller/AuthController";
 
 interface UserInterface {
   id: string;
@@ -24,6 +25,8 @@ interface UserInterface {
 function Profile() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserInterface | null>(null);
+
+  const authController = new AuthController();
 
   const getUser = () => {
     setUser({
@@ -149,15 +152,15 @@ function Profile() {
             description="Apakah yakin akan keluar ?"
             labelYes="Iya"
             labelNo="Tidak"
-            onYes={() => {
-              localStorage.clear();
+            onYes={async () => {
+              await authController.logout();
               window.location.href = "/auth/signin";
             }}
             buttonClass="w-full gap-2 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
             buttonChild={
               <div className="flex items-center justify-center">
-                <LogOut size={16} className="me-2"/>
-                Keluar 
+                <LogOut size={16} className="me-2" />
+                Keluar
               </div>
             }
           />

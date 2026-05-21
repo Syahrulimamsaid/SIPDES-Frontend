@@ -8,11 +8,12 @@ import {
   Navigation,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
-import { Presence } from "../../interface/PresenceInterface";
-import PresenceController from "../../controller/PresenceController";
-import { Toast } from "../../components/ui/alert/Toast";
+import { Presence } from "../../../interface/PresenceInterface";
+import PresenceController from "../../../controller/PresenceController";
+import { Toast } from "../../../components/ui/alert/Toast";
 import { useEffect, useState } from "react";
-import Map from "../../components/custom/Map";
+import Map from "../../../components/custom/Map";
+import { statusColor } from "../../../helpers/statusColor";
 
 function RecordDetail() {
   const navigate = useNavigate();
@@ -31,8 +32,24 @@ function RecordDetail() {
         localStorage.getItem("token") || "",
       );
       setDetail(data);
-    } catch (err) {
-      Toast({ message: err.response.data.message, variant: "error" });
+    } catch (err: unknown) {
+      let message = "Internal Server Error";
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+
+      if (error?.response?.data?.message) {
+        message = error.response.data.message;
+      }
+
+      Toast({
+        message,
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -41,16 +58,6 @@ function RecordDetail() {
   useEffect(() => {
     getDetail();
   }, []);
-
-  const statusColor = {
-    hadir: "bg-green-100 text-green-700",
-    terlambat: "bg-yellow-100 text-yellow-700",
-    alpa: "bg-red-100 text-red-700",
-    cuti: "bg-blue-100 text-blue-700",
-    pulang: "bg-purple-100 text-purple-700",
-    masuk: "bg-gray-100 text-gray-700",
-    "": "bg-gray-100 text-gray-700",
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
@@ -147,7 +154,7 @@ function RecordDetail() {
               </div>
 
               <div
-                className={`mb-5 rounded-2xl px-4 py-3 flex items-center justify-between ${statusColor[detail.status]}`}
+                className={`mb-5 rounded-2xl px-4 py-3 flex items-center justify-between ${statusColor(detail.status)}`}
               >
                 <div>
                   <p className="text-xs opacity-80">Status Presensi</p>

@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { Calendar, Filter, LogIn, LogOut, MapPin } from "lucide-react";
-import Button from "../../components/ui/button/Button";
-import PresenceController from "../../controller/PresenceController";
-import { Presence } from "../../interface/PresenceInterface";
-import { Toast } from "../../components/ui/alert/Toast";
+import { Calendar, Filter,LogIn, LogOut, MapPin } from "lucide-react";
+import Button from "../../../components/ui/button/Button";
+import PresenceController from "../../../controller/PresenceController";
+import { Presence } from "../../../interface/PresenceInterface";
+import { Toast } from "../../../components/ui/alert/Toast";
 import { useNavigate } from "react-router";
+import { statusColor } from "../../../helpers/statusColor";
+import NotFound from "../../../components/custom/NotFound";
 
 function Record() {
   const navigate = useNavigate();
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [listYear, setListYear] = useState<number[]>([]);
   const [records, setRecords] = useState<Presence[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -19,29 +22,45 @@ function Record() {
     try {
       setLoading(true);
       const data = await presenceController.get(
+        new Date(year, month, 1),
         localStorage.getItem("token") || "",
       );
       setRecords(data);
-    } catch (err) {
-      Toast({ message: err.response.data.message, variant: "error" });
+    } catch (err: unknown) {
+      let message = "Internal Server Error";
+
+      if (err instanceof Error) {
+        message = err.message;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+
+      if (error?.response?.data?.message) {
+        message = error.response.data.message;
+      }
+
+      Toast({
+        message,
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const getFilters = () => {
+    const yearData = Array.from(
+      { length: new Date().getFullYear() - 2026 + 1 },
+      (_, i) => 2026 + i,
+    );
+    setListYear(yearData);
+  };
+
   useEffect(() => {
     getRecords();
+    getFilters();
   }, []);
-
-  const statusColor = {
-    hadir: "bg-green-100 text-green-700",
-    terlambat: "bg-yellow-100 text-yellow-700",
-    alpa: "bg-red-100 text-red-700",
-    cuti: "bg-blue-100 text-blue-700",
-    pulang: "bg-purple-100 text-purple-700",
-    masuk: "bg-gray-100 text-gray-700",
-    "": "bg-gray-100 text-gray-700",
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
@@ -70,12 +89,19 @@ function Record() {
               onChange={(e) => setYear(Number(e.target.value))}
               className="bg-white text-gray-700 text-xs rounded px-2 py-1"
             >
-              {[2024, 2025, 2026].map((y) => (
+              {listYear?.map((y) => (
                 <option key={y}>{y}</option>
               ))}
             </select>
 
-            <Button size="sm" className="ml-auto text-xs">
+            <Button
+              size="sm"
+              className="ml-auto text-xs"
+              variant="outline"
+              onClick={() => {
+                getRecords();
+              }}
+            >
               Terapkan
             </Button>
           </div>
@@ -98,11 +124,7 @@ function Record() {
               </div>
             ))}
 
-          {!loading && records.length === 0 && (
-            <div className="text-center text-gray-400 py-10">
-              Tidak ada data presensi
-            </div>
-          )}
+          {!loading && records.length === 0 && <NotFound />}
 
           {!loading &&
             records.map((item) => (
@@ -123,7 +145,7 @@ function Record() {
                   </div>
 
                   <span
-                    className={`text-[10px] px-2 py-1 rounded-full font-medium ${statusColor[item.status]}`}
+                    className={`text-[10px] px-2 py-1 rounded-full font-medium ${statusColor(item.status)}`}
                   >
                     {item.status.charAt(0).toUpperCase() +
                       item.status.slice(1).toLowerCase()}

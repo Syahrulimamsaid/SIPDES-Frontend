@@ -1,19 +1,22 @@
-import { useState } from "react";
-import { DropdownItem } from "../../../components/ui/dropdown/DropdownItem";
-import { Dropdown } from "../../../components/ui/dropdown/Dropdown";
+import { forwardRef, useImperativeHandle, useState } from "react";
+import { DropdownItem } from "../../../../components/ui/dropdown/DropdownItem";
+import { Dropdown } from "../../../../components/ui/dropdown/Dropdown";
 import { Link } from "react-router";
 import { BellRing, X } from "lucide-react";
 import NotificationCard from "./NotifCard";
-import PresenceController from "../../../controller/PresenceController";
-import { Notification as NotificationInterface } from "../../../interface/NotificationInterface";
-import { timeAgo } from "../../../helpers/timeAgo";
+import PresenceController from "../../../../controller/PresenceController";
+import { Notification as NotificationInterface } from "../../../../interface/NotificationInterface";
+import { timeAgo } from "../../../../helpers/timeAgo";
 
-export default function Notification() {
+export interface NotificationRef {
+  getNotif: () => Promise<void>;
+}
+
+export default forwardRef<NotificationRef>(function Notification(props, ref) {
   const presenceController = new PresenceController();
 
   const [data, setData] = useState<NotificationInterface[] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [notifying, setNotifying] = useState(true);
 
   const getNotif = async () => {
     try {
@@ -24,6 +27,10 @@ export default function Notification() {
       console.log(err);
     }
   };
+
+  useImperativeHandle(ref, () => ({
+    getNotif,
+  }));
 
   useState(() => {
     getNotif();
@@ -39,7 +46,6 @@ export default function Notification() {
 
   const handleClick = () => {
     toggleDropdown();
-    setNotifying(false);
   };
 
   return (
@@ -50,7 +56,7 @@ export default function Notification() {
       >
         <span
           className={`absolute right-0 top-0.5 z-10 h-2 w-2 rounded-full bg-orange-400 ${
-            !notifying ? "hidden" : "flex"
+            data != null && data.length > 0 ? "flex" : "hidden"
           }`}
         >
           <span className="absolute inline-flex w-full h-full bg-orange-400 rounded-full opacity-75 animate-ping"></span>
@@ -138,4 +144,4 @@ export default function Notification() {
       </Dropdown>
     </div>
   );
-}
+});

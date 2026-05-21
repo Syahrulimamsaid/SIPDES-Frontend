@@ -1,11 +1,15 @@
 import API from "../config/API";
 import { Notification } from "../interface/NotificationInterface";
-import { Presence, PresenceCreate } from "../interface/PresenceInterface";
+import {
+  Presence,
+  PresenceCreate,
+  PresenceResponse,
+} from "../interface/PresenceInterface";
 
 class PresenceController {
-  async get(token: string): Promise<Presence[]> {
+  async get(periode:Date, token: string): Promise<Presence[]> {
     try {
-      const result = await API.get("/presence", {
+      const result = await API.get(`/presence/${periode}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -19,7 +23,7 @@ class PresenceController {
 
   async getById(id: string, token: string): Promise<Presence> {
     try {
-      const result = await API.get(`/presence/${id}`, {
+      const result = await API.get(`/presence/id/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -30,8 +34,7 @@ class PresenceController {
       throw e;
     }
   }
-
-    async getByProcess(): Promise<Notification[]> {
+  async getByProcess(): Promise<Notification[]> {
     try {
       const result = await API.get(`/presence/process`);
       return result.data;
@@ -40,8 +43,10 @@ class PresenceController {
       throw e;
     }
   }
-
-  async presence(token: string, data: PresenceCreate): Promise<Presence[]> {
+  async presence(
+    token: string,
+    data: PresenceCreate,
+  ): Promise<PresenceResponse> {
     try {
       const result = await API.post(
         "/presence",

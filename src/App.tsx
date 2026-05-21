@@ -7,11 +7,12 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import { Toaster } from "react-hot-toast";
 import AuthMiddleware from "./Middleware/AuthMIddleware";
 import GuestOnly from "./Middleware/GuestMiddleware";
-import Presence from "./pages/Presence/Index";
-import Record from "./pages/Record/Index";
-import Profile from "./pages/Profile/Index";
-import RecordDetail from "./pages/Record/Detail";
+import Presence from "./pages/User/Presence/Index";
+import Record from "./pages/User/Record/Index";
+import Profile from "./pages/User/Profile/Index";
+import RecordDetail from "./pages/User/Record/Detail";
 import About from "./pages/About";
+import AppLayout from "./layout/AppLayout";
 
 export default function App() {
   return (
@@ -21,7 +22,6 @@ export default function App() {
         <ScrollToTop />
 
         <Routes>
-          {/* Dashboard Layout */}
           <Route element={<AuthMiddleware />} path="/">
             <Route element={<AppMobileLayout />} path="/">
               <Route index path="/" element={<Presence />} />
@@ -33,7 +33,7 @@ export default function App() {
               <Route path="/about" element={<About />} />
             </Route>
 
-            {/* <Route element={<AppLayout />} path="/"> */}
+            <Route element={<AppLayout />} path="/">
             {/* Menu */}
             {/* <Route path="/trans" element={<IndexTrans />} />
               <Route path="/trans/add" element={<AddTrans />} />
@@ -41,7 +41,7 @@ export default function App() {
                 path="/trans/edit/:id"
                 element={<EditTrans />}
               /> */}
-            {/* </Route> */}
+            </Route>
           </Route>
 
           <Route

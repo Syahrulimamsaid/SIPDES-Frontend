@@ -21,7 +21,7 @@ class LocationController {
     lat: number,
     lng: number,
     locationId: string,
-  ): Promise<LocationAccess[]> {
+  ): Promise<LocationAccess> {
     try {
       const data = await API.post(
         "/location/check",

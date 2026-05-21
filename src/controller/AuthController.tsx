@@ -1,6 +1,7 @@
 import API from "../config/API";
+import { clearCookie } from "../helpers/clearCookie";
 class AuthController {
-  async login(phone_number: string, password: string, device:string) {
+  async login(phone_number: string, password: string, device: string) {
     try {
       const login = await API.post("/auth/sign-in", {
         phone_number: phone_number,
@@ -22,19 +23,10 @@ class AuthController {
 
   async logout() {
     try {
-      const logout = await API.post(
-        "/auth/logout",
-        {},
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const logout = await API.get("/auth/sign-out", {});
 
-      localStorage.removeItem("phone_number");
-      localStorage.removeItem("fullname");
-      localStorage.removeItem("role");
-      localStorage.removeItem("token");
-      localStorage.removeItem("village");
+      localStorage.clear();
+      clearCookie("auth");
       return logout.data;
     } catch (e) {
       console.error(e);
