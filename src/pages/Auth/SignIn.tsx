@@ -7,6 +7,7 @@ import Input from "../../components/form/input/InputField";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "../../components/ui/button/Button";
 import FingerPrint from "@fingerprintjs/fingerprintjs";
+import { catchHandle } from "../../helpers/catchHandle";
 
 interface Auth {
   phone: string;
@@ -70,24 +71,8 @@ function SignIn() {
       Toast({ message: "Login Success", variant: "success" });
       navigate("/");
     } catch (err: unknown) {
-      let message = "Internal Server Error";
-
-      if (err instanceof Error) {
-        message = err.message;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = err as any;
-
-      if (error?.response?.data?.message) {
-        message = error.response.data.message;
-      }
-
-      Toast({
-        message,
-        variant: "error",
-      });
-    } finally {
+      catchHandle({ err, variant: "warning" });
+    } finally { 
       setLoading(false);
     }
   };
@@ -183,14 +168,14 @@ function SignIn() {
               {loading ? "Sedang masuk..." : "Masuk"}
             </Button>
           </form>
-          <div className="flex items-center justify-center mt-5">
+          {/* <div className="flex items-center justify-center mt-5">
             <button
               type="button"
               className="text-sm font-medium text-blue-500 transition hover:text-blue-600 hover:underline dark:text-blue-300"
             >
               Login sebagai Admin →
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

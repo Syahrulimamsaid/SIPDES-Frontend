@@ -8,8 +8,9 @@ import { getLocation } from "../../../helpers/GetLocation";
 import PresenceController from "../../../controller/PresenceController";
 import { Toast } from "../../../components/ui/alert/Toast";
 import ConfirmDialog from "../../../components/custom/ConfirmModal";
-import Notification, { NotificationRef } from "./Notification/Notification";
+import NotificationPopUp, { NotificationRef } from "./Notification/Notification";
 import AuthController from "../../../controller/AuthController";
+import { catchHandle } from "../../../helpers/catchHandle";
 
 function Presence() {
   const notifRef = useRef<NotificationRef>(null);
@@ -47,6 +48,8 @@ function Presence() {
         localStorage.getItem("token") || "",
       );
       setLocations(data);
+    } catch (err: unknown) {
+      catchHandle({ err, variant: "warning" });
     } finally {
       setLoading(false);
     }
@@ -73,24 +76,15 @@ function Presence() {
         ...prev,
         [locationId]: data.isInside ?? false,
       }));
+
+      if (!data.isInside) {
+        Toast({
+          message: "Anda berada di luar jangkauan",
+          variant: "warning",
+        });
+      }
     } catch (err: unknown) {
-      let message = "Internal Server Error";
-
-      if (err instanceof Error) {
-        message = err.message;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = err as any;
-
-      if (error?.response?.data?.message) {
-        message = error.response.data.message;
-      }
-
-      Toast({
-        message,
-        variant: "error",
-      });
+      catchHandle({ err, variant: "warning" });
     } finally {
       setLoadingMap((prev) => ({ ...prev, [locationId]: false }));
     }
@@ -110,13 +104,13 @@ function Presence() {
       );
 
       Toast({
-        message: `Presensi ${presence.type == "IN" ? "masuk" : "pulang"} berhasil`,
+        message: `Presensi ${presence.type} berhasil`,
         variant: "success",
       });
 
       getLocations();
-    } catch (e) {
-      console.error(e);
+    } catch (err: unknown) {
+      catchHandle({ err, variant: "warning" });
     } finally {
       await notifRef.current?.getNotif();
     }
@@ -125,8 +119,8 @@ function Presence() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
       <div className="w-full max-w-md md:max-w-2xl">
-        <div className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-5 pt-6 pb-20 rounded-b-3xl shadow relative">
-          <div className="flex items-start justify-between">
+        <div className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-5 pt-6 pb-23 rounded-b-3xl shadow relative">
+          <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl md:text-2xl font-bold">SIPDES</h1>
               <p className="text-xs text-white/80">
@@ -165,7 +159,7 @@ function Presence() {
                   </p>
                 </div>
 
-                <Notification />
+                <NotificationPopUp />
               </div>
 
               <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
@@ -237,6 +231,7 @@ function Presence() {
 
                     {isValid &&
                     (loc.presence?.status == "masuk" ||
+                      loc.presence?.status == "terlambat" ||
                       loc.presence?.status == "") ? (
                       <Button
                         size="sm"

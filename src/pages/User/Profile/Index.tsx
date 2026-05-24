@@ -45,38 +45,39 @@ function Profile() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-24 flex justify-center">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
       <div className="w-full max-w-md md:max-w-2xl">
-        <div className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-5 pt-8 pb-20 rounded-b-3xl shadow">
+        <div className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-5 pt-6 pb-24 rounded-b-3xl shadow relative">
           <h1 className="text-lg font-semibold">Profil</h1>
           <p className="text-xs text-white/80">Informasi akun dan pengaturan</p>
-        </div>
 
-        <div className="px-4 -mt-16">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-4">
-              <div className="bg-indigo-100 text-indigo-600 p-4 rounded-2xl">
-                <User size={28} />
+          {/* <div className="px-4 -mt-16"> */}
+          <div className="absolute left-4 right-4 -bottom-16">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-lg">
+              <div className="flex items-center gap-4">
+                <div className="bg-indigo-100 text-indigo-600 p-4 rounded-2xl">
+                  <User size={28} />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-white">
+                    {user?.fullname}
+                  </h2>
+                  <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                    <MapPin size={12} />
+                    {user?.village?.name}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-base font-semibold text-gray-800 dark:text-white">
-                  {user?.fullname}
-                </h2>
-                <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                  <MapPin size={12} />
-                  {user?.village?.name}
-                </p>
-              </div>
-            </div>
 
-            <div className="mt-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-              <Phone size={14} />
-              {user?.phone_number}
+              <div className="mt-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Phone size={14} />
+                {user?.phone_number}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="px-4 mt-6 space-y-5">
+        <div className="px-4 mt-23 space-y-5">
           <div>
             <h3 className="text-xs font-semibold text-gray-500 mb-2">
               INFORMASI AKUN

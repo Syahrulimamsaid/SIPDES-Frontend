@@ -24,7 +24,7 @@ function AppMobileLayout() {
           <button
             onClick={() => navigate("/")}
             className={`flex flex-col items-center text-xs ${
-              isActive("/") ? "text-brand-600" : "text-gray-500"
+              isActive("/") || isActive("/notification") ? "text-brand-600" : "text-gray-500"
             }`}
           >
             <CalendarCheck size={20} />

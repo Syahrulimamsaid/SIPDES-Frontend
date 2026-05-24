@@ -27,6 +27,17 @@ export interface PresenceCreate {
 }
 
 export interface PresenceResponse {
-  type: "IN" | "OUT";
-  data: Presence;
+  userId: string;
+  lat: number;
+  lng: number;
+  location_access: {
+    id: string;
+    description: string;
+    location: {
+      name: string;
+    };
+  };
+  type: "masuk" | "pulang";
+  status: "masuk" | "pulang";
+  created_at: Date;
 }

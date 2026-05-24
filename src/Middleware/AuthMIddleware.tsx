@@ -4,7 +4,7 @@ import LogKed from "../helpers/LogKed";
 import { LoadingScreen } from "../context/LoadingScreen";
 
 export default function AuthMiddleware() {
-  const [authorized, setAuthorized] = useState<boolean | null>(null);
+const [authorized, setAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkToken = async () => {

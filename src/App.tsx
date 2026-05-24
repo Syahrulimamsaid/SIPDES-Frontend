@@ -13,6 +13,9 @@ import Profile from "./pages/User/Profile/Index";
 import RecordDetail from "./pages/User/Record/Detail";
 import About from "./pages/About";
 import AppLayout from "./layout/AppLayout";
+import AccessMiddleware from "./Middleware/AccessMiddleware";
+import Dashboard from "./pages/Admin/Dashboard/Home";
+import Notification from "./pages/User/Presence/Notification/Index";
 
 export default function App() {
   return (
@@ -23,22 +26,24 @@ export default function App() {
 
         <Routes>
           <Route element={<AuthMiddleware />} path="/">
-            <Route element={<AppMobileLayout />} path="/">
+            <Route element={<AccessMiddleware access="umum"><AppMobileLayout /></AccessMiddleware>} path="/">
               <Route index path="/" element={<Presence />} />
-              
+
+              <Route path="/notification" element={<Notification />} />
+
               <Route path="/record" element={<Record />} />
               <Route path="/record/detail/:id" element={<RecordDetail />} />
-              
+
               <Route path="/profile" element={<Profile />} />
               <Route path="/about" element={<About />} />
             </Route>
 
-            <Route element={<AppLayout />} path="/">
-            {/* Menu */}
-            {/* <Route path="/trans" element={<IndexTrans />} />
-              <Route path="/trans/add" element={<AddTrans />} />
+            <Route element={<AccessMiddleware access="operator"><AppLayout /></AccessMiddleware>} path="/operator">
+              {/* Menu */}
+              <Route index element={<Dashboard />} />
+              {/* <Route path="trans/add" element={<AddTrans />} />
               <Route
-                path="/trans/edit/:id"
+                path="trans/edit/:id"
                 element={<EditTrans />}
               /> */}
             </Route>

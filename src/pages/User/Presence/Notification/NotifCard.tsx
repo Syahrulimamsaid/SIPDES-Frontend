@@ -24,13 +24,6 @@ const categoryConfig = {
     badge: "bg-orange-50 text-orange-700 border border-orange-200",
     iconBox: "bg-orange-100 text-orange-600 border border-orange-200",
   },
-
-  // holiday: {
-  //   label: "Hari Libur",
-  //   icon: CalendarDays,
-  //   badge: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-  //   iconBox: "bg-emerald-100 text-emerald-600 border border-emerald-200",
-  // },
 };
 
 export default function NotificationCard({
