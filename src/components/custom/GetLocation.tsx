@@ -22,10 +22,10 @@ function GetLocation() {
 
   return (
     <div>
-      <Button onClick={handleGetLocation}>Ambil Lokasi</Button>
+      <Button onClick={handleGetLocation} className="dark:bg-brand-600 dark:hover:bg-brand-700">Ambil Lokasi</Button>
 
       {location && (
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-gray-400">
           Lat: {location.lat}, Lng: {location.lng}
         </p>
       )}

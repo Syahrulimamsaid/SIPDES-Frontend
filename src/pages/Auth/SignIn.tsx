@@ -78,9 +78,9 @@ function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
-        <div className="bg-linear-to-br from-indigo-600 to-blue-600 text-white flex flex-col items-center justify-center p-8 text-center">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
+      <div className="w-full max-w-5xl bg-white dark:bg-gray-950 rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 border border-gray-100 dark:border-gray-800">
+        <div className="bg-linear-to-br from-indigo-600 to-blue-600 dark:from-indigo-950 dark:to-blue-900 text-white flex flex-col items-center justify-center p-8 text-center">
           <img
             src="/assets/pati.png"
             alt="Kab. Pati"
@@ -96,14 +96,14 @@ function SignIn() {
 
         <div className="p-8 md:p-10">
           {deferredPrompt && (
-            <div className="mb-6 flex items-center justify-between bg-blue-50 border border-blue-100 px-4 py-2 rounded-lg">
-              <p className="text-xs text-blue-600">
+            <div className="mb-6 flex items-center justify-between bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 px-4 py-2 rounded-lg">
+              <p className="text-xs text-blue-600 dark:text-blue-400">
                 Install aplikasi untuk pengalaman lebih optimal
               </p>
 
               <button
                 onClick={installApp}
-                className="text-xs font-medium bg-blue-600 hover:bg-indigo-600 text-white px-3 py-1 rounded-md transition"
+                className="text-xs font-medium bg-blue-600 dark:bg-indigo-700 hover:bg-indigo-600 dark:hover:bg-indigo-800 text-white px-3 py-1 rounded-md transition cursor-pointer"
               >
                 Install
               </button>
@@ -111,10 +111,10 @@ function SignIn() {
           )}
 
           <div className="mb-10">
-            <h2 className="text-2xl font-semibold text-gray-800">
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
               Masuk ke Akun
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Silakan masukkan nomor HP dan password Anda
             </p>
           </div>
@@ -160,7 +160,7 @@ function SignIn() {
             </div>
 
             <Button
-              className="w-full mt-10"
+              className="w-full mt-10 dark:bg-brand-600 dark:hover:bg-brand-700"
               size="md"
               type="submit"
               disabled={loading}

@@ -25,7 +25,11 @@ class AuthController {
     try {
       const logout = await API.get("/auth/sign-out", {});
 
-      localStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("phone_number");
+      localStorage.removeItem("fullname");
+      localStorage.removeItem("role");
+      localStorage.removeItem("village");
       clearCookie("auth");
       return logout.data;
     } catch (e) {
@@ -40,6 +44,20 @@ class AuthController {
         headers: { Authorization: `Bearer ${token}` },
       });
       return logked.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async changePassword(data: any) {
+    try {
+      const response = await API.post("/auth/change-password", {
+        old_password: data.old_password,
+        new_password: data.new_password,
+        confirm_password: data.confirm_password,
+      });
+      return response.data;
     } catch (e) {
       console.error(e);
       throw e;

@@ -15,18 +15,39 @@ export const Toast = ({
   duration = 4000,
   position = "top-right",
 }: ToastProps) => {
+  const isDark =
+    typeof window !== "undefined" &&
+    (document.documentElement.classList.contains("dark") ||
+      localStorage.getItem("theme") === "dark");
+
+  const toastOptions = {
+    icon,
+    duration,
+    position,
+    ...(isDark
+      ? {
+          style: {
+            borderRadius: "12px",
+            background: "#1e293b", // slate-800
+            color: "#f8fafc", // slate-50
+            border: "1px solid #334155", // slate-700
+          },
+        }
+      : {}),
+  };
+
   switch (variant) {
     case "success":
-      toast.success(message, { icon, duration, position });
+      toast.success(message, toastOptions);
       break;
     case "error":
-      toast.error(message, { icon, duration, position });
+      toast.error(message, toastOptions);
       break;
     case "warning":
-      toast(message, { icon: icon || "⚠️", duration, position });
+      toast(message, { ...toastOptions, icon: icon || "⚠️" });
       break;
     case "info":
-      toast(message, { icon: icon || "ℹ️", duration, position });
+      toast(message, { ...toastOptions, icon: icon || "ℹ️" });
       break;
   }
 };

@@ -62,7 +62,7 @@ function RecordDetail() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
       <div className="w-full max-w-md md:max-w-2xl">
-        <div className="bg-linear-to-r from-indigo-600 to-blue-600 px-5 pt-6 pb-8 rounded-b-3xl shadow-lg text-white">
+        <div className="bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-950 dark:to-blue-900 px-5 pt-6 pb-8 rounded-b-3xl shadow-lg text-white">
           <button
             onClick={() => navigate(-1)}
             className="mb-5 flex items-center gap-2 text-sm text-white/90"
@@ -139,7 +139,7 @@ function RecordDetail() {
           <div className="px-4 -mt-4 space-y-5">
             <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 p-5">
               <div className="flex items-center gap-3 mb-5">
-                <div className="p-3 rounded-2xl bg-indigo-100 text-indigo-600">
+                <div className="p-3 rounded-2xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
                   <Clock3 size={22} />
                 </div>
 
@@ -147,7 +147,7 @@ function RecordDetail() {
                   <h2 className="font-semibold text-gray-800 dark:text-white">
                     Informasi Presensi
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Detail waktu kehadiran
                   </p>
                 </div>
@@ -169,8 +169,8 @@ function RecordDetail() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-green-50 border border-green-100 p-4">
-                  <div className="flex items-center gap-2 text-green-700 mb-2">
+                <div className="rounded-2xl bg-green-50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/50 p-4">
+                  <div className="flex items-center gap-2 text-green-700 dark:text-green-400 mb-2">
                     <LogIn size={18} />
                     <span className="text-sm font-medium">Jam Masuk</span>
                   </div>
@@ -181,8 +181,8 @@ function RecordDetail() {
                       : "-"}
                   </p>
                 </div>
-                <div className="rounded-2xl bg-red-50 border border-red-100 p-4">
-                  <div className="flex items-center gap-2 text-red-600 mb-2">
+                <div className="rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 p-4">
+                  <div className="flex items-center gap-2 text-red-600 dark:text-red-400 mb-2">
                     <LogOut size={18} />
                     <span className="text-sm font-medium">Jam Pulang</span>
                   </div>
@@ -222,12 +222,12 @@ function RecordDetail() {
                       Titik Masuk
                     </h2>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Lokasi saat melakukan presensi masuk
                     </p>
                   </div>
 
-                  <Navigation className="text-green-600" />
+                  <Navigation className="text-green-600 dark:text-green-400" />
                 </div>
 
                 <div className="px-5 pb-4">
@@ -257,12 +257,12 @@ function RecordDetail() {
                       Titik Pulang
                     </h2>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Lokasi saat melakukan presensi pulang
                     </p>
                   </div>
 
-                  <Navigation className="text-red-500" />
+                  <Navigation className="text-red-500 dark:text-red-400" />
                 </div>
 
                 <div className="px-5 pb-4">

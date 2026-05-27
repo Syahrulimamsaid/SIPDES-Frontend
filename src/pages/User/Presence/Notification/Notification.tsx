@@ -86,7 +86,7 @@ export default forwardRef<NotificationRef>(function NotificationPopUp(props, ref
                 <li key={index}>
                   <DropdownItem
                     onItemClick={closeDropdown}
-                    className="rounded-2xl border border-gray-200 p-0 transition-all hover:border-brand-200 hover:shadow-md dark:border-gray-800"
+                    className="rounded-2xl border border-gray-200 p-0 transition-all hover:border-brand-200 dark:hover:border-brand-900 hover:shadow-md dark:border-gray-800"
                   >
                     <NotificationCard
                       category={item.type}
@@ -109,7 +109,7 @@ export default forwardRef<NotificationRef>(function NotificationPopUp(props, ref
             })
           ) : (
             <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 border border-blue-100">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50">
                 <svg
                   className="w-8 h-8 text-blue-500"
                   fill="none"
@@ -137,7 +137,7 @@ export default forwardRef<NotificationRef>(function NotificationPopUp(props, ref
         </ul>{" "}
         <Link
           to="/notification"
-          className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+          className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
         >
           Lihat Semua Notifikasi
         </Link>

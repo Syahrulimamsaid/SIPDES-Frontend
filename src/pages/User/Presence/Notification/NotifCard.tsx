@@ -14,15 +14,15 @@ const categoryConfig = {
   masuk: {
     label: "Masuk",
     icon: Navigation,
-    badge: "bg-green-50 text-green-700 border border-green-200",
-    iconBox: "bg-green-100 text-green-600 border border-green-200",
+    badge: "bg-green-50 text-green-700 border border-green-200 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/20",
+    iconBox: "bg-green-100 text-green-600 border border-green-200 dark:bg-green-500/10 dark:text-green-300 dark:border-green-500/20",
   },
 
   pulang: {
     label: "Pulang",
     icon: Navigation,
-    badge: "bg-orange-50 text-orange-700 border border-orange-200",
-    iconBox: "bg-orange-100 text-orange-600 border border-orange-200",
+    badge: "bg-orange-50 text-orange-700 border border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20",
+    iconBox: "bg-orange-100 text-orange-600 border border-orange-200 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20",
   },
 };
 

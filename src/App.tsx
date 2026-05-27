@@ -10,11 +10,17 @@ import GuestOnly from "./Middleware/GuestMiddleware";
 import Presence from "./pages/User/Presence/Index";
 import Record from "./pages/User/Record/Index";
 import Profile from "./pages/User/Profile/Index";
+import ChangePassword from "./pages/User/Profile/ChangePassword";
 import RecordDetail from "./pages/User/Record/Detail";
 import About from "./pages/About";
 import AppLayout from "./layout/AppLayout";
 import AccessMiddleware from "./Middleware/AccessMiddleware";
 import Dashboard from "./pages/Admin/Dashboard/Home";
+import ListPresensi from "./pages/Admin/Presence/List";
+import UserManagement from "./pages/Admin/Master/User";
+import DesaManagement from "./pages/Admin/Master/Desa";
+import SettingManagement from "./pages/Admin/Master/Setting";
+import LaporanManagement from "./pages/Admin/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
 
 export default function App() {
@@ -35,17 +41,18 @@ export default function App() {
               <Route path="/record/detail/:id" element={<RecordDetail />} />
 
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/change-password" element={<ChangePassword />} />
               <Route path="/about" element={<About />} />
             </Route>
 
             <Route element={<AccessMiddleware access="operator"><AppLayout /></AccessMiddleware>} path="/operator">
               {/* Menu */}
               <Route index element={<Dashboard />} />
-              {/* <Route path="trans/add" element={<AddTrans />} />
-              <Route
-                path="trans/edit/:id"
-                element={<EditTrans />}
-              /> */}
+              <Route path="presensi" element={<ListPresensi />} />
+              <Route path="master/user" element={<UserManagement />} />
+              <Route path="master/desa" element={<DesaManagement />} />
+              <Route path="master/setting" element={<SettingManagement />} />
+              <Route path="laporan" element={<LaporanManagement />} />
             </Route>
           </Route>
 

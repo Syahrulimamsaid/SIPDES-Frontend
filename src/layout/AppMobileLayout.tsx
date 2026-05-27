@@ -20,11 +20,11 @@ function AppMobileLayout() {
           <Outlet />
         </div>
 
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-4xl bg-white dark:bg-gray-800 border-t flex justify-around py-3">
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-4xl bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 flex justify-around py-3">
           <button
             onClick={() => navigate("/")}
             className={`flex flex-col items-center text-xs ${
-              isActive("/") || isActive("/notification") ? "text-brand-600" : "text-gray-500"
+              isActive("/") || isActive("/notification") ? "text-brand-600 dark:text-brand-400" : "text-gray-500 dark:text-gray-400"
             }`}
           >
             <CalendarCheck size={20} />
@@ -34,7 +34,7 @@ function AppMobileLayout() {
           <button
             onClick={() => navigate("/record")}
             className={`flex flex-col items-center text-xs ${
-              isActive("record") ? "text-brand-600" : "text-gray-500"
+              isActive("record") ? "text-brand-600 dark:text-brand-400" : "text-gray-500 dark:text-gray-400"
             }`}
           >
             <ClipboardList size={20} />
@@ -44,7 +44,7 @@ function AppMobileLayout() {
           <button
             onClick={() => navigate("/profile")}
             className={`flex flex-col items-center text-xs ${
-              isActive("profile") ? "text-brand-600" : "text-gray-500"
+              isActive("profile") ? "text-brand-600 dark:text-brand-400" : "text-gray-500 dark:text-gray-400"
             }`}
           >
             <User size={20} />

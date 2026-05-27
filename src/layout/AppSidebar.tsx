@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import {
-  Wallet,
   FileText,
   User,
   GridIcon,
   ChevronDownIcon,
+  Calendar,
+  Settings,
 } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { HorizontaLDots } from "../icons";
@@ -21,17 +22,26 @@ const navMenu: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    path: "/",
+    path: "/operator",
   },
   {
-    icon: <Wallet/>,
-    name: "Input Data",
-    path: "/trans", // gabungan pemasukan & pengeluaran
+    icon: <Calendar />,
+    name: "List Presensi",
+    path: "/operator/presensi",
+  },
+  {
+    icon: <Settings />,
+    name: "Master Data",
+    subItems: [
+      { name: "Manajemen User", path: "/operator/master/user" },
+      { name: "Manajemen Desa", path: "/operator/master/desa" },
+      { name: "Pengaturan Presensi", path: "/operator/master/setting" },
+    ],
   },
   {
     icon: <FileText />,
     name: "Laporan",
-    path: "/laporan",
+    path: "/operator/laporan",
   }
 ];
 

@@ -117,7 +117,7 @@ const About = () => {
                       </p>
                     </div>
 
-                    <div className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-medium">
+                    <div className="bg-green-100 dark:bg-green-950/30 text-green-600 dark:text-green-400 px-3 py-1 rounded-full text-xs font-medium">
                       Online
                     </div>
                   </div>
@@ -219,7 +219,7 @@ const About = () => {
         <section className="bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
           <div className="max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium">
+              <div className="inline-flex items-center gap-2 bg-indigo-100 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 px-4 py-2 rounded-full text-sm font-medium">
                 <Users size={16} />
                 Manfaat Sistem
               </div>
@@ -240,7 +240,7 @@ const About = () => {
                     key={i}
                     className="flex items-center gap-3 text-gray-700 dark:text-gray-300"
                   >
-                    <div className="bg-green-100 text-green-600 p-1 rounded-full">
+                    <div className="bg-green-100 dark:bg-green-950/50 text-green-600 dark:text-green-400 p-1 rounded-full">
                       <CheckCircle2 size={16} />
                     </div>
 
@@ -250,7 +250,7 @@ const About = () => {
               </div>
             </div>
 
-            <div className="bg-linear-to-br from-indigo-600 to-blue-600 rounded-3xl p-8 text-white shadow-2xl">
+            <div className="bg-linear-to-br from-indigo-600 to-blue-600 dark:from-indigo-950 dark:to-blue-900 rounded-3xl p-8 text-white shadow-2xl">
               <h3 className="text-2xl font-bold">
                 Presensi lebih praktis dan efisien
               </h3>

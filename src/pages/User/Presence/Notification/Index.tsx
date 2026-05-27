@@ -86,7 +86,7 @@ function Notification() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
       <div className="w-full max-w-md md:max-w-2xl">
-        <div className="relative overflow-hidden rounded-b-[2.5rem] bg-linear-to-r from-indigo-600 to-blue-600 px-5 pt-6 pb-18 shadow-2xl">
+        <div className="relative overflow-hidden rounded-b-[2.5rem] bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-950 dark:to-blue-900 px-5 pt-6 pb-18 shadow-2xl">
           <div>
             <button
               onClick={() => navigate(-1)}
@@ -135,7 +135,7 @@ function Notification() {
                     onClick={() => setFilter(item as FilterType)}
                     className={`rounded-xl px-4 py-2 text-sm font-medium capitalize transition-all duration-200 ${
                       filter === item
-                        ? "bg-blue-600 text-white shadow-lg"
+                        ? "bg-blue-600 dark:bg-blue-800 text-white shadow-lg"
                         : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     }`}
                   >
@@ -177,7 +177,7 @@ function Notification() {
                   return (
                     <div
                       key={index}
-                      className={`group relative overflow-hidden rounded-3xl border border-gray-200 bg-white/90 p-5 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/90 dark:hover:border-gray-700 ${config.glow}`}
+                      className={`group relative overflow-hidden rounded-3xl border border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 p-5 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-900 hover:shadow-xl dark:hover:border-gray-700 ${config.glow}`}
                     >
                       {/* <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-blue-500/5 blur-3xl transition-all duration-300 group-hover:bg-blue-500/10" /> */}
 
