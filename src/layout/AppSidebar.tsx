@@ -7,6 +7,8 @@ import {
   ChevronDownIcon,
   Calendar,
   Settings,
+  Users,
+  MapPin,
 } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { HorizontaLDots } from "../icons";
@@ -30,18 +32,27 @@ const navMenu: NavItem[] = [
     path: "/operator/presensi",
   },
   {
-    icon: <Settings />,
-    name: "Master Data",
-    subItems: [
-      { name: "Manajemen User", path: "/operator/master/user" },
-      { name: "Manajemen Desa", path: "/operator/master/desa" },
-      { name: "Pengaturan Presensi", path: "/operator/master/setting" },
-    ],
-  },
-  {
     icon: <FileText />,
     name: "Laporan",
     path: "/operator/laporan",
+  }
+];
+
+const navMaster: NavItem[] = [
+  {
+    icon: <Users />,
+    name: "User",
+    path: "/operator/master/user",
+  },
+  {
+    icon: <MapPin />,
+    name: "Desa",
+    path: "/operator/master/desa",
+  },
+  {
+    icon: <Settings />,
+    name: "Pengaturan Presensi",
+    path: "/operator/master/setting",
   }
 ];
 
@@ -55,12 +66,14 @@ const navOthers: NavItem[] = [
 ];
 
 
+type MenuType = "main" | "master" | "others";
+
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
-    type: "main" | "others";
+    type: MenuType;
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
@@ -76,14 +89,18 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
-      const items = menuType === "main" ? navMenu : navOthers;
+    (["main", "master", "others"] as MenuType[]).forEach((menuType) => {
+      let items: NavItem[] = [];
+      if (menuType === "main") items = navMenu;
+      else if (menuType === "master") items = navMaster;
+      else items = navOthers;
+
       items.forEach((nav, index) => {
         if (nav.subItems) {
           nav.subItems.forEach((subItem) => {
             if (isActive(subItem.path)) {
               setOpenSubmenu({
-                type: menuType as "main" | "others",
+                type: menuType,
                 index,
               });
               submenuMatched = true;
@@ -110,7 +127,7 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+  const handleSubmenuToggle = (index: number, menuType: MenuType) => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
         prevOpenSubmenu &&
@@ -123,7 +140,7 @@ const AppSidebar: React.FC = () => {
     });
   };
 
-  const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
+  const renderMenuItems = (items: NavItem[], menuType: MenuType) => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
         <li key={nav.name}>
@@ -312,6 +329,23 @@ const AppSidebar: React.FC = () => {
                 )}
               </h2>
               {renderMenuItems(navMenu, "main")}
+            </div>{" "}
+           
+            <div>
+              <h2
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                  !isExpanded && !isHovered
+                    ? "lg:justify-center"
+                    : "justify-start"
+                }`}
+              >
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Master"
+                ) : (
+                  <HorizontaLDots className="size-6" />
+                )}
+              </h2>
+              {renderMenuItems(navMaster, "master")}
             </div>{" "}
            
             <div className="">

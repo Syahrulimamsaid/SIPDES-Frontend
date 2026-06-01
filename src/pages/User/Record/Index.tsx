@@ -21,8 +21,8 @@ function Record() {
   const getRecords = async () => {
     try {
       setLoading(true);
-      const data = await presenceController.get(
-        new Date(year, month, 1),
+      const data = await presenceController.getByUser(
+        new Date(year, month - 1, 1),
         localStorage.getItem("token") || "",
       );
       setRecords(data);

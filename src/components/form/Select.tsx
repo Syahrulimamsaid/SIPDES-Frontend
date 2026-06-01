@@ -30,12 +30,10 @@ const Select: React.FC<SelectProps> = ({
   };
 
   useEffect(() => {
-    console.log('defauul : ' + defaultValue);
     setSelectedValue(defaultValue);
   }, [defaultValue]);  
   
   useEffect(() => {
-    console.log(options);
   }, [options]);
 
   return (

@@ -26,7 +26,13 @@ import Notification from "./pages/User/Presence/Notification/Index";
 export default function App() {
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        containerStyle={{
+          zIndex: 999999,
+        }}
+      />
       <Router>
         <ScrollToTop />
 
@@ -61,7 +67,6 @@ export default function App() {
             element={<GuestOnly children={<AuthSignIn />} />}
           />
 
-          {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

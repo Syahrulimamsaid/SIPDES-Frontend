@@ -26,6 +26,13 @@ export interface PresenceCreate {
   locationAccessId: string;
 }
 
+export interface PresenceUpdate {
+  id: string;
+  in: string;
+  out: string;
+  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti" | "pulang" | "";
+}
+
 export interface PresenceResponse {
   userId: string;
   lat: number;

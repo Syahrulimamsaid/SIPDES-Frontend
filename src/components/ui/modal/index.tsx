@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,6 +18,27 @@ export const Modal: React.FC<ModalProps> = ({
   isFullscreen = false,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: any;
+    if (isOpen) {
+      setShouldRender(true);
+      timeoutId = setTimeout(() => {
+        setAnimate(true);
+      }, 10);
+    } else {
+      setAnimate(false);
+      timeoutId = setTimeout(() => {
+        setShouldRender(false);
+      }, 200);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -47,23 +68,27 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   const contentClasses = isFullscreen
     ? "w-full h-full"
-    : "relative w-full rounded-3xl bg-white  dark:bg-gray-900";
+    : "relative w-full rounded-3xl bg-white dark:bg-gray-900";
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto modal z-99999">
+    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto modal z-99999 p-4">
       {!isFullscreen && (
         <div
-          className="fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"
+          className={`fixed inset-0 h-full w-full bg-gray-400/50 transition-opacity duration-200 ease-out ${
+            animate ? "opacity-100" : "opacity-0"
+          }`}
           onClick={onClose}
         ></div>
       )}
       <div
         ref={modalRef}
-        className={`${contentClasses}  ${className}`}
+        className={`${contentClasses} ${className} transition-all duration-200 ease-out transform ${
+          animate ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         {showCloseButton && (
@@ -92,3 +117,4 @@ export const Modal: React.FC<ModalProps> = ({
     </div>
   );
 };
+
