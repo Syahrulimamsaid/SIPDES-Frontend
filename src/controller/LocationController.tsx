@@ -42,6 +42,18 @@ class LocationController {
       throw e;
     }
   }
+
+  async getByAccessUser(userId: string): Promise<LocationAccess[]> {
+    try {
+      const data = await API.post("/location/access/user", {
+        userId: userId
+      });
+      return data.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
 }
 
 export default LocationController;

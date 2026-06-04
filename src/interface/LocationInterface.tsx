@@ -7,8 +7,8 @@ export interface Location {
   name: string;
   lat: number;
   lng: number;
-  radius: number;
-  villageId: string;
+  radius?: number;
+  villageId?: string;
 
   // relations
   Village?: Village;

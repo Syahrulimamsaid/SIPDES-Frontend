@@ -17,6 +17,7 @@ import AppLayout from "./layout/AppLayout";
 import AccessMiddleware from "./Middleware/AccessMiddleware";
 import Dashboard from "./pages/Admin/Dashboard/Home";
 import ListPresensi from "./pages/Admin/Presence/List";
+import AddPresence from "./pages/Admin/Presence/Add";
 import UserManagement from "./pages/Admin/Master/User";
 import DesaManagement from "./pages/Admin/Master/Desa";
 import SettingManagement from "./pages/Admin/Master/Setting";
@@ -54,7 +55,12 @@ export default function App() {
             <Route element={<AccessMiddleware access="operator"><AppLayout /></AccessMiddleware>} path="/operator">
               {/* Menu */}
               <Route index element={<Dashboard />} />
-              <Route path="presensi" element={<ListPresensi />} />
+
+              <Route path="presensi">
+                <Route index element={<ListPresensi />} />
+                <Route path="add" element={<AddPresence />} />
+              </Route>
+              
               <Route path="master/user" element={<UserManagement />} />
               <Route path="master/desa" element={<DesaManagement />} />
               <Route path="master/setting" element={<SettingManagement />} />

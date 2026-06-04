@@ -18,6 +18,8 @@ type PropsType = {
   Type?: "date" | "date-time";
   placeholder?: string;
   viewMode?: "month" | "date";
+  minDate?: Date;
+  maxDate?: Date;
 };
 
 export default function DatePicker({
@@ -28,7 +30,9 @@ export default function DatePicker({
   Type,
   defaultDate,
   placeholder,
-  viewMode = "date"
+  viewMode = "date",
+  minDate,
+  maxDate,
 }: PropsType) {
   useEffect(() => {
     const options: any = {
@@ -40,6 +44,8 @@ export default function DatePicker({
       onChange,
       enableTime: Type == 'date-time' ? true : false,
       noCalendar: false,
+      minDate,
+      maxDate,
     };
 
     if (viewMode === "month") {
@@ -61,7 +67,7 @@ export default function DatePicker({
         flatPickr.destroy();
       }
     };
-  }, [mode, onChange, id, defaultDate, Type, viewMode]);
+  }, [mode, onChange, id, defaultDate, Type, viewMode, minDate, maxDate]);
 
   return (
     <div>

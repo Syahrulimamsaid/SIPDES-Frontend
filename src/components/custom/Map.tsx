@@ -1,10 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import {
   MapContainer,
   Marker,
   Popup,
   TileLayer,
   useMapEvent,
+  useMap,
 } from "react-leaflet";
 
 interface MapProps {
@@ -13,6 +14,19 @@ interface MapProps {
   children?: ReactNode;
   className?: ReactNode;
   animateMove?: boolean;
+  autoCenter?: boolean;
+}
+
+function ChangeMapView({ lat, lng, animate }: { lat: number; lng: number; animate: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    if (lat && lng) {
+      map.setView([lat, lng], map.getZoom(), {
+        animate: animate,
+      });
+    }
+  }, [lat, lng, map, animate]);
+  return null;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -21,6 +35,7 @@ const Map: React.FC<MapProps> = ({
   children,
   className,
   animateMove = false,
+  autoCenter = true,
 }) => {
   function SetViewOnClick({ animateRef }: { animateRef: boolean }) {
     const map = useMapEvent("click", (e) => {
@@ -43,6 +58,7 @@ const Map: React.FC<MapProps> = ({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <SetViewOnClick animateRef={animateMove} />
+      {autoCenter && <ChangeMapView lat={lat} lng={long} animate={animateMove} />}
       <Marker position={[lat, long]}>
         <Popup>{children}</Popup>
       </Marker>

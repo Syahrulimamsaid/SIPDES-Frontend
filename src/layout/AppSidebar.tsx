@@ -65,7 +65,6 @@ const navOthers: NavItem[] = [
  
 ];
 
-
 type MenuType = "main" | "master" | "others";
 
 const AppSidebar: React.FC = () => {

@@ -85,6 +85,33 @@ class PresenceController {
     }
   }
 
+  async create(
+    data: {
+      userId: string;
+      in?: string;
+      out?: string;
+      status: string;
+      locationAccessId?: string;
+    }
+  ): Promise<PresenceResponse> {
+    try {
+      const result = await API.post(
+        "/operator/presence",
+        {
+          userId: data.userId,
+          in: data.in ? new Date(data.in) : null,
+          out: data.out ? new Date(data.out) : null,
+          status: data.status,
+          locationAccessId: data.locationAccessId || null,
+        },
+      );
+      return result.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
   async update(
     data: PresenceUpdate,
   ): Promise<PresenceResponse> {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import PageMeta from "../../../components/common/PageMeta";
 import Button from "../../../components/ui/button/Button";
 import Select from "../../../components/form/Select";
@@ -10,6 +11,7 @@ import {
   Trash2,
   Clock,
   X,
+  Plus,
 } from "lucide-react";
 import DatePicker from "../../../components/form/date-picker";
 import {
@@ -27,6 +29,7 @@ import { catchHandle } from "../../../helpers/catchHandle";
 import { formatTime } from "../../../helpers/formatTime";
 
 export default function List() {
+  const navigate = useNavigate();
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
     return dateStr.includes("T") ? dateStr.split("T")[0] : dateStr;
@@ -122,7 +125,7 @@ export default function List() {
         description="Daftar log presensi semua perangkat desa"
       />
       <div className="space-y-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
               List Presensi
@@ -131,6 +134,14 @@ export default function List() {
               Kelola dan pantau seluruh catatan absensi perangkat desa di wilayah Anda.
             </p>
           </div>
+          <Button
+            variant="primary"
+            onClick={() => navigate("/operator/presensi/add")}
+            className="flex items-center justify-center gap-2 self-start sm:self-auto"
+            startIcon={<Plus size={18} />}
+          >
+            Tambah Presensi
+          </Button>
         </div>
 
         <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-lg dark:border-gray-800 dark:bg-gray-900">
