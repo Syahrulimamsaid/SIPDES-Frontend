@@ -15,13 +15,13 @@ import RecordDetail from "./pages/User/Record/Detail";
 import About from "./pages/About";
 import AppLayout from "./layout/AppLayout";
 import AccessMiddleware from "./Middleware/AccessMiddleware";
-import Dashboard from "./pages/Admin/Dashboard/Home";
-import ListPresensi from "./pages/Admin/Presence/List";
-import AddPresence from "./pages/Admin/Presence/Add";
-import UserManagement from "./pages/Admin/Master/User";
-import DesaManagement from "./pages/Admin/Master/Desa";
-import SettingManagement from "./pages/Admin/Master/Setting";
-import LaporanManagement from "./pages/Admin/Laporan/Index";
+import Dashboard from "./pages/Operator/Dashboard/Home";
+import ListPresensi from "./pages/Operator/Presence/Index";
+import AddPresence from "./pages/Operator/Presence/Add";
+import UserManagement from "./pages/Operator/Master/User";
+import DesaManagement from "./pages/Operator/Master/Desa";
+import SettingManagement from "./pages/Operator/Master/Setting";
+import LaporanManagement from "./pages/Operator/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
 
 export default function App() {

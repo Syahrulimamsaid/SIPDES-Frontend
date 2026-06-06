@@ -79,6 +79,8 @@ const AppSidebar: React.FC = () => {
     {}
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [logoTextError, setLogoTextError] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
@@ -284,32 +286,48 @@ const AppSidebar: React.FC = () => {
       >
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <img
-                className="dark:hidden"
-                src="/logo/logo-text.png"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <img
-                className="hidden dark:block"
-                src="/logo/logo-text.png"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
+            logoTextError ? (
+              <span className="text-3xl font-extrabold tracking-wider text-brand-800 dark:text-brand-300">
+                SIPDES
+              </span>
+            ) : (
+              <>
+                <img
+                  className="dark:hidden"
+                  src="/logo/logo-text.png"
+                  alt="Logo"
+                  width={150}
+                  height={40}
+                  onError={() => setLogoTextError(true)}
+                />
+                <img
+                  className="hidden dark:block"
+                  src="/logo/logo-text.png"
+                  alt="Logo"
+                  width={150}
+                  height={40}
+                  onError={() => setLogoTextError(true)}
+                />
+              </>
+            )
           ) : (
-            <img
-              src="/logo/logo.png"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
+            logoError ? (
+              <span className="text-2xl font-extrabold tracking-wider text-brand-700 dark:text-brand-300">
+                S
+              </span>
+            ) : (
+              <img
+                src="/logo/logo.png"
+                alt="Logo"
+                width={32}
+                height={32}
+                onError={() => setLogoError(true)}
+              />
+            )
           )}
         </Link>
       </div>
+      <hr className="border-gray-200 dark:border-gray-800 mb-6" />
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">

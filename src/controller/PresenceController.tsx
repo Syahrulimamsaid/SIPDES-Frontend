@@ -8,14 +8,16 @@ import {
 } from "../interface/PresenceInterface";
 
 class PresenceController {
-  async get(periode: Date | string, villageId: string, status: string): Promise<Presence[]> {
+  async get(periode: Date | string, params: { villageId?: string, status?: string, page?:number, limit?:number }): Promise<Presence[]> {
     try {
       let filter = `?periode=${periode}`;
-      if (villageId) filter += `&villageId=${villageId}`;
-      if (status !== "all" && status !== "") filter += `&status=${status}`;
-
+      if (params.villageId) filter += `&villageId=${params.villageId}`;
+      if (params.status && params.status !== "all" && params.status !== "") filter += `&status=${params.status}`;
+      if (params.page) filter += `&page=${params.page}`;
+      if (params.limit) filter += `&limit=${params.limit}`;
+      
       const result = await API.get(`/operator/presence${filter}`);
-      return result.data;
+      return result.data.data;
     } catch (e) {
       console.error(e);
       throw e;

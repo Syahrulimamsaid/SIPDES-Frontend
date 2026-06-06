@@ -67,7 +67,10 @@ export default function List() {
 
   const loadData = async () => {
     try {
-      const data = await presenceController.get(new Date(filterDate), "", filterStatus);
+      const data = await presenceController.get(new Date(filterDate), {
+        villageId: "",
+        status: filterStatus,
+      });
       setPresences(data);
     } catch (e) {
       catchHandle({ err: e, variant: "error" });
