@@ -28,7 +28,7 @@ export default function Home() {
   const globalController = new GlobalController();
 
   const [stats, setStats] = useState<Stats>({ user_total: 0, location_total: 0, village_name: "-" });
-  const [statsPresence, setStatsPresence] = useState<StatsPresence>({ presence_total: 0, presence_user_total: 0, hadir_total: 0, terlambat_total: 0, belum_absen_total: 0, presence_status:[{bulan:"", tepat_waktu:0, terlambat:0}] });
+  const [statsPresence, setStatsPresence] = useState<StatsPresence>({ presence_total: 0, presence_user_total: 0, hadir_total: 0, terlambat_total: 0, belum_absen_total: 0, presence_status: [{ bulan: "", tepat_waktu: 0, terlambat: 0 }] });
   const [presences, setPresences] = useState<Presence[]>([]);
 
   const getPresence = async () => {
@@ -238,7 +238,7 @@ export default function Home() {
               </div>
             </div>
             <div className="mt-4 flex items-center text-xs text-gray-500 dark:text-gray-400">
-              <span className="text-red-500 font-semibold mr-1">0</span>
+              <span className="text-red-500 font-semibold mr-1">{stats?.user_total - statsPresence?.presence_user_total}</span>
               perangkat belum hadir hari ini
             </div>
           </div>
@@ -285,7 +285,7 @@ export default function Home() {
                       Hadir Tepat Waktu
                     </span>
                     <span className="text-gray-900 dark:text-white">
-                      {statsPresence?.hadir_total} ({stats?.user_total > 0 ? Math.round((statsPresence?.hadir_total/ (stats?.user_total )) * 100) : 0}%)
+                      {statsPresence?.hadir_total} ({stats?.user_total > 0 ? Math.round((statsPresence?.hadir_total / (stats?.user_total)) * 100) : 0}%)
                     </span>
                   </div>
                   <div className="w-full bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden">
@@ -339,7 +339,7 @@ export default function Home() {
                 <span>Rasio Kehadiran</span>
                 <span className="font-bold text-gray-900 dark:text-white text-base">
                   {stats?.user_total > 0
-                    ? Math.round(((statsPresence?.hadir_total + statsPresence?.terlambat_total) /  stats.user_total) * 100)
+                    ? Math.round(((statsPresence?.hadir_total + statsPresence?.terlambat_total) / stats.user_total) * 100)
                     : 0}%
                 </span>
               </div>
@@ -449,39 +449,21 @@ export default function Home() {
                 </Link>
 
                 <Link
-                  to="/operator/master/desa"
+                  to="/operator/master/lokasi"
                   className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700/80 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-400">
-                      <Building size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-800 dark:text-white">
-                        Manajemen Desa
-                      </h4>
-                      <p className="text-xs text-gray-400">Konfigurasi Wilayah Desa</p>
-                    </div>
-                  </div>
-                  <ArrowRight size={16} className="text-gray-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors" />
-                </Link>
-
-                <Link
-                  to="/operator/master/setting"
-                  className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700/80 transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400">
                       <MapPin size={20} />
                     </div>
                     <div>
                       <h4 className="text-sm font-semibold text-gray-800 dark:text-white">
-                        Pengaturan Presensi
+                        Manajemen Lokasi
                       </h4>
-                      <p className="text-xs text-gray-400">Atur Koordinat & Radius Geofence</p>
+                      <p className="text-xs text-gray-400">Konfigurasi Lokasi Presensi</p>
                     </div>
                   </div>
-                  <ArrowRight size={16} className="text-gray-400 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
+                  <ArrowRight size={16} className="text-gray-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors" />
                 </Link>
               </div>
             </div>

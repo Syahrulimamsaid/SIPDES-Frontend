@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import AuthSignIn from "./pages/Auth/SignIn";
 import NotFound from "./pages/Template/OtherPage/NotFound";
-// import AppLayout from "./layout/AppLayout";
 import AppMobileLayout from "./layout/AppMobileLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import { Toaster } from "react-hot-toast";
@@ -18,9 +17,9 @@ import AccessMiddleware from "./Middleware/AccessMiddleware";
 import Dashboard from "./pages/Operator/Dashboard/Home";
 import ListPresensi from "./pages/Operator/Presence/Index";
 import AddPresence from "./pages/Operator/Presence/Add";
-import UserManagement from "./pages/Operator/Master/User";
-import DesaManagement from "./pages/Operator/Master/Desa";
-import SettingManagement from "./pages/Operator/Master/Setting";
+import UserManagement from "./pages/Operator/Master/User/Index";
+import DesaManagement from "./pages/Operator/Master/Desa/Index";
+import SettingManagement from "./pages/Operator/Master/Setting/Index";
 import LaporanManagement from "./pages/Operator/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
 
@@ -60,7 +59,7 @@ export default function App() {
                 <Route index element={<ListPresensi />} />
                 <Route path="add" element={<AddPresence />} />
               </Route>
-              
+
               <Route path="master/user" element={<UserManagement />} />
               <Route path="master/desa" element={<DesaManagement />} />
               <Route path="master/setting" element={<SettingManagement />} />

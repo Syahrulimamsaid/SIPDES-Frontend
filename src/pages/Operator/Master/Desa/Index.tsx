@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import PageMeta from "../../../components/common/PageMeta";
-import Button from "../../../components/ui/button/Button";
-import Input from "../../../components/form/input/InputField";
-import { Modal } from "../../../components/ui/modal";
-import { getDbVillages, saveDbVillages } from "../../../helpers/adminDb";
-import { Village } from "../../../interface/VillageInterface";
+import PageMeta from "../../../../components/common/PageMeta";
+import Button from "../../../../components/ui/button/Button";
+import Input from "../../../../components/form/input/InputField";
+import { Modal } from "../../../../components/ui/modal";
+import { getDbVillages, saveDbVillages } from "../../../../helpers/adminDb";
+import { Village } from "../../../../interface/VillageInterface";
 import toast from "react-hot-toast";
 import { Search, Plus, Edit2, Trash2, Building, MapPin } from "lucide-react";
 

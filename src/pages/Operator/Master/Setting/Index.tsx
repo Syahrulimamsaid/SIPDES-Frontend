@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import PageMeta from "../../../components/common/PageMeta";
-import Button from "../../../components/ui/button/Button";
-import Input from "../../../components/form/input/InputField";
-import Select from "../../../components/form/Select";
-import { Modal } from "../../../components/ui/modal";
+import PageMeta from "../../../../components/common/PageMeta";
+import Button from "../../../../components/ui/button/Button";
+import Input from "../../../../components/form/input/InputField";
+import Select from "../../../../components/form/Select";
+import { Modal } from "../../../../components/ui/modal";
 import {
   getDbLocations,
   saveDbLocations,
   getDbVillages,
-} from "../../../helpers/adminDb";
-import { Location } from "../../../interface/LocationInterface";
-import { Village } from "../../../interface/VillageInterface";
+} from "../../../../helpers/adminDb";
+import { Location } from "../../../../interface/LocationInterface";
+import { Village } from "../../../../interface/VillageInterface";
 import toast from "react-hot-toast";
 import {
   Search,

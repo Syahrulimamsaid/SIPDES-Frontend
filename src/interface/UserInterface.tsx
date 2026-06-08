@@ -15,3 +15,12 @@ export interface User {
   presences?: Presence[];
   locations?: Location[];
 }
+
+export interface UserCreate {
+  id?: string;
+  phone_number: string;
+  password?: string;
+  fullname: string;
+  role:string;
+  villageId?: string;
+}

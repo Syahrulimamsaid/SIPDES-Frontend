@@ -46,8 +46,8 @@ const navMaster: NavItem[] = [
   },
   {
     icon: <MapPin />,
-    name: "Desa",
-    path: "/operator/master/desa",
+    name: "Lokasi",
+    path: "/operator/master/lokasi",
   },
   {
     icon: <Settings />,
