@@ -1,6 +1,6 @@
 import { Presence } from "./PresenceInterface";
 import { Village } from "./VillageInterface";
-import { Location } from "./LocationInterface";
+import { LocationAccess } from "./LocationAccessInterface";
 
 export interface User {
   id: string;
@@ -13,7 +13,7 @@ export interface User {
 
   village?: Village;
   presences?: Presence[];
-  locations?: Location[];
+  location_access?: LocationAccess[];
 }
 
 export interface UserCreate {

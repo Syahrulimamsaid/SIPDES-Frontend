@@ -48,21 +48,7 @@ const navMaster: NavItem[] = [
     icon: <MapPin />,
     name: "Lokasi",
     path: "/operator/master/lokasi",
-  },
-  {
-    icon: <Settings />,
-    name: "Pengaturan Presensi",
-    path: "/operator/master/setting",
   }
-];
-
-const navOthers: NavItem[] = [
-  {
-    icon: <User />,
-    name: "Profile",
-    path: "/profile",
-  }
- 
 ];
 
 type MenuType = "main" | "master" | "others";
@@ -94,7 +80,6 @@ const AppSidebar: React.FC = () => {
       let items: NavItem[] = [];
       if (menuType === "main") items = navMenu;
       else if (menuType === "master") items = navMaster;
-      else items = navOthers;
 
       items.forEach((nav, index) => {
         if (nav.subItems) {
@@ -364,23 +349,6 @@ const AppSidebar: React.FC = () => {
               </h2>
               {renderMenuItems(navMaster, "master")}
             </div>{" "}
-           
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(navOthers, "others")}
-            </div>
           </div>
         </nav>
       </div>

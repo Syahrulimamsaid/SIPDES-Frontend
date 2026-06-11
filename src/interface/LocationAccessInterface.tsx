@@ -14,3 +14,10 @@ export interface LocationAccess {
   location?: Location;
   presence?: Presence;
 }
+
+export interface LocationAccessCreate {
+  userId?: string;
+  locationId: string;
+  description?: string;
+}
+

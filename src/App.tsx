@@ -20,6 +20,7 @@ import AddPresence from "./pages/Operator/Presence/Add";
 import UserManagement from "./pages/Operator/Master/User/Index";
 import DesaManagement from "./pages/Operator/Master/Desa/Index";
 import SettingManagement from "./pages/Operator/Master/Setting/Index";
+import LokasiManagement from "./pages/Operator/Master/Lokasi/Index";
 import LaporanManagement from "./pages/Operator/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
 
@@ -63,6 +64,7 @@ export default function App() {
               <Route path="master/user" element={<UserManagement />} />
               <Route path="master/desa" element={<DesaManagement />} />
               <Route path="master/setting" element={<SettingManagement />} />
+              <Route path="master/lokasi" element={<LokasiManagement />} />
               <Route path="laporan" element={<LaporanManagement />} />
             </Route>
           </Route>
