@@ -11,9 +11,12 @@ class GlobalController {
     }
   }
 
-  async statsPresence() {
+  async statsPresence(start?:Date, end?:Date) {
     try {
-      const data = await API.get("/global/stats/presence");
+      let filter = "";
+      if (start && end) filter = `?start=${start}&end=${end}`;
+
+      const data = await API.get("/global/stats/presence" + filter);
       return data.data;
     } catch (e) {
       console.error(e);

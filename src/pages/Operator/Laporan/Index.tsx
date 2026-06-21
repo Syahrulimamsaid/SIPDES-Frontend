@@ -1,16 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import PageMeta from "../../../components/common/PageMeta";
 import Button from "../../../components/ui/button/Button";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TablePagination } from "../../../components/ui/table";
 import Select from "../../../components/form/Select";
-import {
-  getDbPresences,
-  getDbUsers,
-  getDbVillages,
-} from "../../../helpers/adminDb";
-import { User } from "../../../interface/UserInterface";
-import { Village } from "../../../interface/VillageInterface";
-import { Presence } from "../../../interface/PresenceInterface";
-import toast from "react-hot-toast";
+import DatePicker from "../../../components/form/date-picker";
 import {
   FileText,
   Download,
@@ -19,166 +12,203 @@ import {
   AlertCircle,
   Building,
   CheckCircle,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
+import Option from "../../../interface/OptionInterface";
+import UserController from "../../../controller/UserController";
+import { catchHandle } from "../../../helpers/catchHandle";
+import ReportController from "../../../controller/ReportController";
+import { ReportPresence } from "../../../interface/ReportInterface";
+import { formatTime } from "../../../helpers/formatTime";
+import { statusColor } from "../../../helpers/statusColor";
+import { Export } from "../../../helpers/export";
+import { Toast } from "../../../components/ui/alert/Toast";
+import { createRoot } from "react-dom/client";
+import ReportPdf from "./Pdf";
+import { StatsPresence } from "../../../interface/StatsInterface";
+import GlobalController from "../../../controller/GlobalController";
 
-interface UserReportSummary {
+interface Filter {
+  startDate: Date;
+  endDate: Date;
   userId: string;
-  fullname: string;
-  villageName: string;
-  totalPresent: number;
-  totalLate: number;
-  totalAbsent: number;
-  totalCuti: number;
-  attendancePercentage: number;
 }
 
 export default function LaporanManagement() {
-  const [presences, setPresences] = useState<Presence[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [villages, setVillages] = useState<Village[]>([]);
+  const userController = new UserController();
+  const reportController = new ReportController();
+  const globalController = new GlobalController();
 
-  // Filter states
-  const [filterMonth, setFilterMonth] = useState("05"); // Default to May
-  const [filterYear, setFilterYear] = useState("2026"); // Default to 2026
-  const [filterVillageId, setFilterVillageId] = useState("");
-  const [filterUserId, setFilterUserId] = useState("");
-
-  const [reportData, setReportData] = useState<UserReportSummary[]>([]);
-  const [totals, setTotals] = useState({
-    avgPercentage: 0,
-    totalLate: 0,
-    totalAbsent: 0,
-    totalPresent: 0,
+  const [filter, setFilter] = useState<Filter>({
+    startDate: new Date(),
+    endDate: new Date(),
+    userId: "",
   });
 
-  const monthOptions = [
-    { value: "01", label: "Januari" },
-    { value: "02", label: "Februari" },
-    { value: "03", label: "Maret" },
-    { value: "04", label: "April" },
-    { value: "05", label: "Mei" },
-    { value: "06", label: "Juni" },
-    { value: "07", label: "Juli" },
-    { value: "08", label: "Agustus" },
-    { value: "09", label: "September" },
-    { value: "10", label: "Oktober" },
-    { value: "11", label: "November" },
-    { value: "12", label: "Desember" },
-  ];
+  const [report, setReport] = useState<ReportPresence[]>([]);
+  const [users, setUsers] = useState<Option[]>([{ label: "Semua Perangkat", value: "" }]);
+  const [paginatedReport, setPaginatedReport] = useState<ReportPresence[]>([]);
 
-  const yearOptions = [
-    { value: "2024", label: "2024" },
-    { value: "2025", label: "2025" },
-    { value: "2026", label: "2026" },
-    { value: "2027", label: "2027" },
-  ];
+  const [stats, setStats] = useState<StatsPresence>({
+    presence_total: 0,
+    presence_user_total: 0,
+    hadir_total: 0,
+    terlambat_total: 0,
+    user_terlambat_total: 0,
+    belum_absen_total: 0,
+    alpha_total: 0,
+    presentase_hadir: 0,
+    presence_status: [],
+  });
 
-  const villageOptions = villages.map((v) => ({
-    value: v.id,
-    label: v.name,
-  }));
+  const [loading, setLoading] = useState(false);
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
-  const userOptions = users
-    .filter((u) => u.role === "umum")
-    .map((u) => ({
-      value: u.id,
-      label: u.fullname,
-    }));
+  const getReport = async () => {
+    if (!filter.startDate || !filter.endDate) return;
+    setLoading(true);
+    try {
+      const data = await reportController.presence(filter.startDate, filter.endDate, { userId: filter.userId });
+      setReport(data);
+    } catch (err) {
+      catchHandle({ err: err, variant: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const loadData = () => {
-    setPresences(getDbPresences());
-    setUsers(getDbUsers());
-    setVillages(getDbVillages());
+  const getUser = async () => {
+    try {
+      const data = await userController.get();
+      const dataTemp = data.map((e) => ({
+        value: e.id,
+        label: e.fullname,
+      }));
+
+      setUsers([{ label: "Semua Perangkat", value: "" }, ...dataTemp]);
+    } catch (err) {
+      catchHandle({ err: err, variant: "error" });
+    }
+  }
+
+  const getStats = async () => {
+    try {
+      const data = await globalController.statsPresence(filter.startDate, filter.endDate);
+      setStats(data);
+    } catch (err) {
+      catchHandle({ err: err, variant: "error" });
+    }
+  }
+
+  const toggleRow = async (userId: string) => {
+    const isExpanded = !expandedRows[userId];
+    setExpandedRows((prev) => ({ ...prev, [userId]: isExpanded }));
   };
 
   useEffect(() => {
-    loadData();
+    if (report.length === 0) {
+      setPaginatedReport([]);
+    }
+  }, [report]);
+
+
+  useEffect(() => {
+    getUser();
   }, []);
 
-  // Compute reports based on filters
   useEffect(() => {
-    const generalUsers = users.filter((u) => u.role === "umum");
+    getStats();
+    getReport();
+  }, [filter]);
 
-    // Filter users by village and user filters
-    let targetUsers = [...generalUsers];
-    if (filterVillageId !== "") {
-      targetUsers = targetUsers.filter((u) => u.villageId === filterVillageId);
+  useEffect(() => {
+    setExpandedRows({});
+  }, [filter]);
+
+  const handleFilter = (key: string, value: string) => {
+    setFilter((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  }
+
+  const handleExcel = async () => {
+    if (report.length === 0) {
+      Toast({ message: "Tidak ada data untuk diekspor", variant: "error" });
+      return;
     }
-    if (filterUserId !== "") {
-      targetUsers = targetUsers.filter((u) => u.id === filterUserId);
+
+    try {
+      const periodName = `${filter.startDate}_hingga_${filter.endDate}`;
+      const columns = [
+        { header: "No", valueGetter: (_: any, index: number) => index + 1 },
+        { header: "Nama Perangkat Desa", key: "user.fullname" },
+        { header: "Desa Wilayah", valueGetter: (data: any) => data.user.village?.name || "-" },
+        { header: "Hadir Tepat Waktu (Hari)", key: "jumlah_hadir_tepat_waktu" },
+        { header: "Terlambat (Hari)", key: "jumlah_terlambat" },
+        { header: "Cuti / Izin (Hari)", key: "jumlah_cuti_izin" },
+        { header: "Alpa (Hari)", key: "alpa" },
+        { header: "Persentase Kehadiran (%)", key: "persentase_kehadiran" },
+      ];
+
+      const success = await Export.excel(report, columns, `Laporan_Presensi_${periodName}`);
+      if (success) Toast({ message: "Excel berhasil diunduh!", variant: "success" });
+    } catch (err) {
+      catchHandle({ err: err, variant: "error" });
+    }
+  }
+
+  const handlePdf = async () => {
+    if (report.length === 0) {
+      Toast({ message: "Tidak ada data untuk diekspor", variant: "error" });
+      return;
     }
 
-    // Filter presences by month & year
-    const monthlyPresences = presences.filter((p) => {
-      if (!p.date) return false;
-      const [year, month] = p.date.split("-");
-      return month === filterMonth && year === filterYear;
-    });
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      Toast({ message: "Gagal membuka jendela cetak. Pastikan pop-up tidak diblokir.", variant: "error" });
+      return;
+    }
 
-    // Work days in month context (simulated 22 working days)
-    const totalWorkDays = 22;
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Laporan Rekap Presensi - SIPDES</title>
+        </head>
+        <body class="bg-white">
+          <div id="print-root"></div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
 
-    const summaries: UserReportSummary[] = targetUsers.map((u) => {
-      const userPresences = monthlyPresences.filter((p) => p.userId === u.id);
-
-      const present = userPresences.filter((p) => p.status === "hadir" || p.status === "pulang").length;
-      const late = userPresences.filter((p) => p.status === "terlambat").length;
-      const cuti = userPresences.filter((p) => p.status === "cuti").length;
-      const totalAttended = present + late;
-      const absent = Math.max(0, totalWorkDays - (totalAttended + cuti));
-
-      const pct = totalWorkDays > 0 ? Math.round((totalAttended / totalWorkDays) * 100) : 0;
-
-      return {
-        userId: u.id,
-        fullname: u.fullname,
-        villageName: u.village?.name || "N/A",
-        totalPresent: present,
-        totalLate: late,
-        totalAbsent: absent,
-        totalCuti: cuti,
-        attendancePercentage: pct,
-      };
-    });
-
-    setReportData(summaries);
-
-    // Compute sums and averages
-    if (summaries.length > 0) {
-      const sumPct = summaries.reduce((acc, curr) => acc + curr.attendancePercentage, 0);
-      const sumLate = summaries.reduce((acc, curr) => acc + curr.totalLate, 0);
-      const sumAbsent = summaries.reduce((acc, curr) => acc + curr.totalAbsent, 0);
-      const sumPresent = summaries.reduce((acc, curr) => acc + (curr.totalPresent + curr.totalLate), 0);
-
-      setTotals({
-        avgPercentage: Math.round(sumPct / summaries.length),
-        totalLate: sumLate,
-        totalAbsent: sumAbsent,
-        totalPresent: sumPresent,
+    const container = printWindow.document.getElementById("print-root");
+    if (container) {
+      // Copy style tags from parent window so Tailwind styles are applied in the new window
+      document.querySelectorAll("style, link[rel='stylesheet']").forEach((style) => {
+        printWindow.document.head.appendChild(style.cloneNode(true));
       });
-    } else {
-      setTotals({ avgPercentage: 0, totalLate: 0, totalAbsent: 0, totalPresent: 0 });
+
+      const root = createRoot(container);
+      root.render(
+        <ReportPdf
+          report={report}
+          filter={filter}
+          stats={stats}
+        />
+      );
     }
-  }, [presences, users, filterMonth, filterYear, filterVillageId, filterUserId]);
-
-  const handleExport = (type: "excel" | "pdf") => {
-    const monthName = monthOptions.find((m) => m.value === filterMonth)?.label || "Bulan";
-    const filename = `Laporan_Presensi_${monthName}_${filterYear}.${type === "excel" ? "xlsx" : "pdf"}`;
-
-    const loadingToast = toast.loading(`Sedang mengekspor ke ${type.toUpperCase()}...`);
-
-    setTimeout(() => {
-      toast.dismiss(loadingToast);
-      toast.success(`${filename} berhasil diunduh!`);
-    }, 1500);
   };
 
   const handleResetFilters = () => {
-    setFilterMonth("05");
-    setFilterYear("2026");
-    setFilterVillageId("");
-    setFilterUserId("");
-    toast.success("Filter laporan disetel ulang!");
+    setFilter({
+      startDate: new Date(),
+      endDate: new Date(),
+      userId: "",
+    });
+    Toast({ message: "Filter laporan berhasil disetel ulang!", variant: "success" });
   };
 
   return (
@@ -188,7 +218,6 @@ export default function LaporanManagement() {
         description="Rekapitulasi absensi bulanan perangkat desa"
       />
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
@@ -201,7 +230,7 @@ export default function LaporanManagement() {
           <div className="flex gap-2.5">
             <Button
               variant="outline"
-              onClick={() => handleExport("pdf")}
+              onClick={() => handlePdf()}
               className="flex items-center gap-2"
               startIcon={<FileText size={16} />}
             >
@@ -209,7 +238,7 @@ export default function LaporanManagement() {
             </Button>
             <Button
               variant="success"
-              onClick={() => handleExport("excel")}
+              onClick={() => handleExcel()}
               className="flex items-center gap-2"
               startIcon={<Download size={16} />}
             >
@@ -218,62 +247,42 @@ export default function LaporanManagement() {
           </div>
         </div>
 
-        {/* Filter Panel */}
-        <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-lg dark:border-gray-800 dark:bg-gray-900">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5 items-end">
-            {/* Month */}
+        <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-md dark:border-gray-800 dark:bg-gray-900 space-y-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 items-end">
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Periode Bulan
+                Periode Tanggal
               </label>
-              <Select
-                options={monthOptions}
-                placeholder="Pilih Bulan"
-                onChange={(val) => setFilterMonth(val)}
-                defaultValue={filterMonth}
+              <DatePicker
+                id="reportPeriode"
+                mode="range"
+                defaultDate={[filter.startDate, filter.endDate]}
+                placeholder="Pilih Range Tanggal"
+                onChange={(selectedDates: any) => {
+                  if (selectedDates && selectedDates.length === 2) {
+                    const [start, end] = selectedDates;
+                    setFilter((prev) => ({
+                      ...prev,
+                      startDate: start,
+                      endDate: end,
+                    }));
+                  }
+                }}
               />
             </div>
 
-            {/* Year */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Tahun
+                Perangkat Desa
               </label>
               <Select
-                options={yearOptions}
-                placeholder="Pilih Tahun"
-                onChange={(val) => setFilterYear(val)}
-                defaultValue={filterYear}
+                options={users}
+                placeholder="Pilih Perangkat"
+                onChange={(val) => handleFilter('userId', val)}
+                defaultValue={filter.userId}
               />
             </div>
 
-            {/* Village */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Filter Desa
-              </label>
-              <Select
-                options={villageOptions}
-                placeholder="Semua Desa"
-                onChange={(val) => setFilterVillageId(val)}
-                defaultValue={filterVillageId}
-              />
-            </div>
-
-            {/* User */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Filter Perangkat
-              </label>
-              <Select
-                options={userOptions}
-                placeholder="Semua Perangkat"
-                onChange={(val) => setFilterUserId(val)}
-                defaultValue={filterUserId}
-              />
-            </div>
-
-            {/* Reset Filters */}
             <div>
               <Button
                 variant="outline"
@@ -286,17 +295,15 @@ export default function LaporanManagement() {
           </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Present */}
-          <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-md dark:border-gray-800 dark:bg-gray-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
                   Rasio Kehadiran Rata-rata
                 </p>
                 <h4 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-                  {totals.avgPercentage}%
+                  {stats.presentase_hadir}%
                 </h4>
               </div>
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-500 dark:bg-green-500/10 dark:text-green-400">
@@ -305,15 +312,14 @@ export default function LaporanManagement() {
             </div>
           </div>
 
-          {/* Total Present Days */}
-          <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+          <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-md dark:border-gray-800 dark:bg-gray-900">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
                   Total Hari Hadir (Semua)
                 </p>
                 <h4 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-                  {totals.totalPresent} Hari
+                  {stats.hadir_total} Hari
                 </h4>
               </div>
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10 dark:text-brand-400">
@@ -322,7 +328,6 @@ export default function LaporanManagement() {
             </div>
           </div>
 
-          {/* Total Late */}
           <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-lg dark:border-gray-800 dark:bg-gray-900">
             <div className="flex items-center justify-between">
               <div>
@@ -330,7 +335,7 @@ export default function LaporanManagement() {
                   Frekuensi Terlambat
                 </p>
                 <h4 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-                  {totals.totalLate} Kali
+                  {stats.terlambat_total} Kali
                 </h4>
               </div>
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400">
@@ -339,7 +344,6 @@ export default function LaporanManagement() {
             </div>
           </div>
 
-          {/* Total Absent */}
           <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-lg dark:border-gray-800 dark:bg-gray-900">
             <div className="flex items-center justify-between">
               <div>
@@ -347,7 +351,7 @@ export default function LaporanManagement() {
                   Total Alpa / Tanpa Ket.
                 </p>
                 <h4 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-                  {totals.totalAbsent} Hari
+                  {stats.alpha_total} Hari
                 </h4>
               </div>
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-500 dark:bg-red-500/10 dark:text-red-400">
@@ -357,12 +361,11 @@ export default function LaporanManagement() {
           </div>
         </div>
 
-        {/* Detailed Table */}
         <div className="rounded-3xl border border-gray-100 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                Rincian Rekap Presensi Perangkat
+                Rekap Presensi Perangkat
               </h3>
               <p className="text-xs text-gray-400">
                 Dihitung berdasarkan target 22 hari kerja efektif per bulan.
@@ -371,79 +374,181 @@ export default function LaporanManagement() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-              <thead className="bg-gray-50 dark:bg-gray-800/50 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                <tr>
-                  <th className="px-6 py-4">Perangkat Desa</th>
-                  <th className="px-6 py-4">Desa Wilayah</th>
-                  <th className="px-6 py-4 text-center">Hadir Tepat Waktu</th>
-                  <th className="px-6 py-4 text-center">Terlambat</th>
-                  <th className="px-6 py-4 text-center">Cuti / Izin</th>
-                  <th className="px-6 py-4 text-center">Alpa</th>
-                  <th className="px-6 py-4">Persentase Kehadiran</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {reportData.length > 0 ? (
-                  reportData.map((row) => (
-                    <tr
-                      key={row.userId}
-                      className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors"
-                    >
-                      <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {row.fullname}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="flex items-center gap-1.5">
-                          <Building size={14} className="text-gray-400" />
-                          {row.villageName}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center font-semibold text-green-600 dark:text-green-400">
-                        {row.totalPresent} Hari
-                      </td>
-                      <td className="px-6 py-4 text-center font-semibold text-amber-500">
-                        {row.totalLate} Hari
-                      </td>
-                      <td className="px-6 py-4 text-center font-semibold text-blue-500">
-                        {row.totalCuti} Hari
-                      </td>
-                      <td className="px-6 py-4 text-center font-semibold text-red-500">
-                        {row.totalAbsent} Hari
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-24 bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden shrink-0">
-                            <div
-                              className={`h-full rounded-full transition-all duration-300 ${
-                                row.attendancePercentage >= 80
-                                  ? "bg-green-500"
-                                  : row.attendancePercentage >= 60
-                                  ? "bg-yellow-500"
-                                  : "bg-red-500"
-                              }`}
-                              style={{ width: `${row.attendancePercentage}%` }}
-                            ></div>
-                          </div>
-                          <span className="font-bold text-gray-900 dark:text-white">
-                            {row.attendancePercentage}%
+            <Table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+              <TableHeader className="bg-gray-50 dark:bg-gray-800/50 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase">
+                <TableRow>
+                  <TableCell isHeader className="w-10 py-4" children={undefined}></TableCell>
+                  <TableCell isHeader className="px-6 py-4">Perangkat Desa</TableCell>
+                  <TableCell isHeader className="px-6 py-4">Desa Wilayah</TableCell>
+                  <TableCell isHeader className="px-6 py-4 text-center">Hadir Tepat Waktu</TableCell>
+                  <TableCell isHeader className="px-6 py-4 text-center">Terlambat</TableCell>
+                  <TableCell isHeader className="px-6 py-4 text-center">Cuti / Izin</TableCell>
+                  <TableCell isHeader className="px-6 py-4 text-center">Alpa</TableCell>
+                  <TableCell isHeader className="px-6 py-4">Persentase Kehadiran</TableCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                      Memuat data laporan...
+                    </TableCell>
+                  </TableRow>
+                ) : paginatedReport.length > 0 ? (
+                  paginatedReport.map((data) => (
+                    <Fragment key={data.user.id}>
+                      <TableRow
+                        onClick={() => toggleRow(data.user.id)}
+                        className="hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors cursor-pointer"
+                      >
+                        <TableCell className="px-4 py-4 text-center w-10">
+                          {expandedRows[data.user.id] ? (
+                            <ChevronDown size={16} className="text-gray-400" />
+                          ) : (
+                            <ChevronRight size={16} className="text-gray-400" />
+                          )}
+                        </TableCell>
+                        <TableCell className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                          {data.user.fullname}
+                        </TableCell>
+                        <TableCell className="px-6 py-4">
+                          <span className="flex items-center gap-1.5">
+                            <Building size={14} className="text-gray-400" />
+                            {data.user.village?.name}
                           </span>
-                        </div>
-                      </td>
-                    </tr>
+                        </TableCell>
+                        <TableCell className="px-6 py-4 text-center font-semibold text-green-600 dark:text-green-400">
+                          {data.jumlah_hadir_tepat_waktu} Hari
+                        </TableCell>
+                        <TableCell className="px-6 py-4 text-center font-semibold text-amber-500">
+                          {data.jumlah_terlambat} Hari
+                        </TableCell>
+                        <TableCell className="px-6 py-4 text-center font-semibold text-blue-500">
+                          {data.jumlah_cuti_izin} Hari
+                        </TableCell>
+                        <TableCell className="px-6 py-4 text-center font-semibold text-red-500">
+                          {data.alpa} Hari
+                        </TableCell>
+                        <TableCell className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-24 bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden shrink-0">
+                              <div
+                                className={`h-full rounded-full transition-all duration-300 ${data.persentase_kehadiran >= 80
+                                  ? "bg-green-500"
+                                  : data.persentase_kehadiran >= 60
+                                    ? "bg-yellow-500"
+                                    : "bg-red-500"
+                                  }`}
+                                style={{ width: `${data.persentase_kehadiran}%` }}
+                              ></div>
+                            </div>
+                            <span className="font-bold text-gray-900 dark:text-white">
+                              {data.persentase_kehadiran}%
+                            </span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+
+                      {expandedRows[data.user.id] && (
+                        <TableRow className="bg-gray-50/50 dark:bg-white/[0.01] hover:bg-transparent border-t-0 select-none cursor-default">
+                          <TableCell colSpan={8} className="px-6 py-4">
+                            <div className="space-y-3 pl-6">
+                              <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
+                                <h4 className="text-sm font-bold text-gray-800 dark:text-white">
+                                  List Presensi
+                                </h4>
+                                <span className="text-xs text-gray-400">
+                                  Total: {data.presence?.length || 0} hari tercatat
+                                </span>
+                              </div>
+
+                              {data.presence && data.presence.length > 0 ? (
+                                <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/50">
+                                  <Table className="w-full text-xs text-left text-gray-500 dark:text-gray-400">
+                                    <TableHeader className="bg-gray-50/70 dark:bg-gray-800/30 font-semibold text-gray-650 dark:text-gray-450 uppercase text-[10px]">
+                                      <TableRow>
+                                        <TableCell isHeader className="px-4 py-2.5">Tanggal</TableCell>
+                                        <TableCell isHeader className="px-4 py-2.5">Jam Masuk</TableCell>
+                                        <TableCell isHeader className="px-4 py-2.5">Jam Pulang</TableCell>
+                                        <TableCell isHeader className="px-4 py-2.5">Status</TableCell>
+                                        <TableCell isHeader className="px-4 py-2.5">Lokasi</TableCell>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody className="divide-y divide-gray-100 dark:divide-gray-850">
+                                      {data.presence.map((pres) => (
+                                        <TableRow key={pres.id} className="hover:bg-gray-50/30 dark:hover:bg-white/[0.005]">
+                                          <TableCell className="px-4 py-2.5 font-medium text-gray-800 dark:text-gray-200">
+                                            {pres.date ? pres.date.split("T")[0] : "-"}
+                                          </TableCell>
+                                          <TableCell className="px-4 py-2.5">
+                                            {pres.in ? (
+                                              <span className="flex items-center gap-1">
+                                                <Clock size={12} className="text-emerald-500" />
+                                                {formatTime(pres.in)}
+                                              </span>
+                                            ) : (
+                                              <span className="text-gray-400">-</span>
+                                            )}
+                                          </TableCell>
+                                          <TableCell className="px-4 py-2.5">
+                                            {pres.out ? (
+                                              <span className="flex items-center gap-1">
+                                                <Clock size={12} className="text-brand-500" />
+                                                {formatTime(pres.out)}
+                                              </span>
+                                            ) : (
+                                              <span className="text-gray-400">-</span>
+                                            )}
+                                          </TableCell>
+                                          <TableCell className="px-4 py-2.5">
+                                            <span
+                                              className={`inline-flex px-2 py-0.5 text-[10px] font-semibold rounded-full capitalize ${statusColor(
+                                                pres.status
+                                              )}`}
+                                            >
+                                              {pres.status || "Belum Absen"}
+                                            </span>
+                                          </TableCell>
+                                          <TableCell className="px-4 py-2.5 text-gray-500 dark:text-gray-400">
+                                            {pres.location_access?.location?.name || "-"}
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </div>
+                              ) : (
+                                <div className="py-6 text-center text-xs text-gray-400 border border-dashed border-gray-200 dark:border-gray-800 rounded-xl">
+                                  Tidak ada catatan presensi untuk rentang tanggal ini.
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center text-gray-400 dark:text-gray-600">
+                  <TableRow>
+                    <TableCell colSpan={8} className="px-6 py-12 text-center text-gray-400 dark:text-gray-600">
                       Tidak ada data laporan untuk kombinasi filter di atas.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
+
+          {!loading && report.length > 0 && (
+            <TablePagination
+              data={report}
+              onPageDataChange={setPaginatedReport}
+            />
+          )}
         </div>
       </div>
     </>
   );
 }
+
+

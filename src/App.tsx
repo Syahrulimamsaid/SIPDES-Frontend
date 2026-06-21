@@ -18,11 +18,14 @@ import Dashboard from "./pages/Operator/Dashboard/Home";
 import ListPresensi from "./pages/Operator/Presence/Index";
 import AddPresence from "./pages/Operator/Presence/Add";
 import UserManagement from "./pages/Operator/Master/User/Index";
-import DesaManagement from "./pages/Operator/Master/Desa/Index";
 import SettingManagement from "./pages/Operator/Master/Setting/Index";
 import LokasiManagement from "./pages/Operator/Master/Lokasi/Index";
 import LaporanManagement from "./pages/Operator/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
+import CalendarManagement from "./pages/Operator/Master/Calendar/Index";
+import DashboardAdmin from "./pages/Admin/Dashboard/Home";
+import CalendarManagementAdmin from "./pages/Admin/Master/Calendar/Index";
+import Setting from "./pages/Operator/Master/Setting/Index";
 
 export default function App() {
   return (
@@ -62,10 +65,27 @@ export default function App() {
               </Route>
 
               <Route path="master/user" element={<UserManagement />} />
-              <Route path="master/desa" element={<DesaManagement />} />
               <Route path="master/setting" element={<SettingManagement />} />
               <Route path="master/lokasi" element={<LokasiManagement />} />
+              <Route path="master/calendar" element={<CalendarManagement />} />
               <Route path="laporan" element={<LaporanManagement />} />
+            </Route>
+
+            <Route element={<AccessMiddleware access="admin"><AppLayout /></AccessMiddleware>} path="/admin">
+              <Route index element={<DashboardAdmin />} />
+
+              <Route path="presensi">
+                <Route index element={<ListPresensi />} />
+                <Route path="add" element={<AddPresence />} />
+              </Route>
+
+              <Route path="master/user" element={<UserManagement />} />
+              <Route path="master/setting" element={<SettingManagement />} />
+              <Route path="master/lokasi" element={<LokasiManagement />} />
+              <Route path="master/calendar" element={<CalendarManagementAdmin />} />
+              <Route path="laporan" element={<LaporanManagement />} />
+
+              <Route path="setting" element={<Setting  />} />
             </Route>
           </Route>
 

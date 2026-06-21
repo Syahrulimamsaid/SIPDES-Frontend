@@ -13,7 +13,7 @@ type PropsType = {
   id: string;
   mode?: "single" | "multiple" | "range";
   onChange?: Hook | Hook[];
-  defaultDate?: DateOption;
+  defaultDate?: DateOption | DateOption[];
   label?: string;
   Type?: "date" | "date-time";
   placeholder?: string;

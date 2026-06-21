@@ -14,6 +14,7 @@ import { timeAgo } from "../../../../helpers/timeAgo";
 import { useNavigate } from "react-router";
 import NotFound from "../../../../components/custom/NotFound";
 import { catchHandle } from "../../../../helpers/catchHandle";
+import PageMeta from "../../../../components/common/PageMeta";
 
 type FilterType = "all" | "masuk" | "pulang";
 
@@ -84,6 +85,11 @@ function Notification() {
   }, [notifications, filter, search]);
 
   return (
+    <>
+      <PageMeta
+        title="Notifikasi - SIPDES"
+        description="Informasi notifikasi"
+      />
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
       <div className="w-full max-w-md md:max-w-2xl">
         <div className="relative overflow-hidden rounded-b-[2.5rem] bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-950 dark:to-blue-900 px-5 pt-6 pb-18 shadow-2xl">
@@ -241,6 +247,7 @@ function Notification() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

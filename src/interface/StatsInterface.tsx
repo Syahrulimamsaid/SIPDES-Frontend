@@ -9,7 +9,10 @@ export interface StatsPresence {
   presence_user_total: number;
   hadir_total: number;
   terlambat_total: number;
+  user_terlambat_total:number;
   belum_absen_total: number;
+  alpha_total: number;
+  presentase_hadir: number;
   presence_status: {
     bulan: string;
     tepat_waktu: number;

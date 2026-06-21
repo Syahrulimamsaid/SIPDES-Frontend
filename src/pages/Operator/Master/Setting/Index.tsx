@@ -23,7 +23,7 @@ import {
   Building,
 } from "lucide-react";
 
-export default function SettingManagement() {
+export default function Setting() {
   const [locations, setLocations] = useState<Location[]>([]);
   const [villages, setVillages] = useState<Village[]>([]);
   const [filteredLocations, setFilteredLocations] = useState<Location[]>([]);

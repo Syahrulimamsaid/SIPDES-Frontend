@@ -13,7 +13,7 @@ class AuthController {
       localStorage.setItem("fullname", login.data.name);
       localStorage.setItem("role", login.data.role);
       localStorage.setItem("token", login.data.token);
-      localStorage.setItem("village", login.data.village.name);
+      localStorage.setItem("village", login.data.village?.name);
       return login.data;
     } catch (e) {
       console.error(e);

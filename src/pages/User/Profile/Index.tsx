@@ -11,6 +11,7 @@ import { ThemeToggleButton } from "../../../components/common/ThemeToggleButton"
 import { useNavigate } from "react-router";
 import ConfirmDialog from "../../../components/custom/ConfirmModal";
 import AuthController from "../../../controller/AuthController";
+import PageMeta from "../../../components/common/PageMeta";
 
 interface UserInterface {
   id: string;
@@ -45,6 +46,11 @@ function Profile() {
   }, []);
 
   return (
+    <>
+      <PageMeta
+        title="Profil - SIPDES"
+        description="Informasi akun dan pengaturan"
+      />
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 flex justify-center">
       <div className="w-full max-w-md md:max-w-2xl">
         <div className="bg-linear-to-r from-indigo-600 to-blue-600 dark:from-indigo-950 dark:to-blue-900 text-white px-5 pt-6 pb-24 rounded-b-3xl shadow relative">
@@ -171,6 +177,7 @@ function Profile() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

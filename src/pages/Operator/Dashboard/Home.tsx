@@ -28,7 +28,11 @@ export default function Home() {
   const globalController = new GlobalController();
 
   const [stats, setStats] = useState<Stats>({ user_total: 0, location_total: 0, village_name: "-" });
-  const [statsPresence, setStatsPresence] = useState<StatsPresence>({ presence_total: 0, presence_user_total: 0, hadir_total: 0, terlambat_total: 0, belum_absen_total: 0, presence_status: [{ bulan: "", tepat_waktu: 0, terlambat: 0 }] });
+  const [statsPresence, setStatsPresence] = useState<StatsPresence>({
+    presence_total: 0, presence_user_total: 0, hadir_total: 0, terlambat_total: 0, belum_absen_total: 0,
+    user_terlambat_total: 0, alpha_total: 0,
+    presence_status: [{ bulan: "", tepat_waktu: 0, terlambat: 0 }]
+  });
   const [presences, setPresences] = useState<Presence[]>([]);
 
   const getPresence = async () => {
@@ -303,13 +307,13 @@ export default function Home() {
                       Terlambat
                     </span>
                     <span className="text-gray-900 dark:text-white">
-                      {statsPresence?.terlambat_total} ({stats?.user_total > 0 ? Math.round((statsPresence?.terlambat_total / stats.user_total) * 100) : 0}%)
+                      {statsPresence?.user_terlambat_total} ({stats?.user_total > 0 ? Math.round((statsPresence?.user_terlambat_total / stats.user_total) * 100) : 0}%)
                     </span>
                   </div>
                   <div className="w-full bg-gray-100 dark:bg-gray-800 h-2 rounded-full overflow-hidden">
                     <div
                       className="bg-yellow-500 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${stats?.user_total > 0 ? (statsPresence?.terlambat_total / stats.user_total) * 100 : 0}%` }}
+                      style={{ width: `${stats?.user_total > 0 ? (statsPresence?.user_terlambat_total / stats.user_total) * 100 : 0}%` }}
                     ></div>
                   </div>
                 </div>
@@ -339,7 +343,7 @@ export default function Home() {
                 <span>Rasio Kehadiran</span>
                 <span className="font-bold text-gray-900 dark:text-white text-base">
                   {stats?.user_total > 0
-                    ? Math.round(((statsPresence?.hadir_total + statsPresence?.terlambat_total) / stats.user_total) * 100)
+                    ? Math.round(((statsPresence?.hadir_total + statsPresence?.user_terlambat_total) / stats.user_total) * 100)
                     : 0}%
                 </span>
               </div>
