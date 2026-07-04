@@ -21,9 +21,9 @@ import {
   TableRow,
   TableCell,
 } from "../../../components/ui/table";
-import EditModal from "./EditModal";
-import DetailModal from "./DetailModal";
-import DeleteModal from "./DeleteModal";
+import EditModal from "./Edit";
+import DetailModal from "./Detail";
+import DeleteModal from "./Delete";
 import { statusColor } from "../../../helpers/statusColor";
 import { catchHandle } from "../../../helpers/catchHandle";
 import { formatTime } from "../../../helpers/formatTime";

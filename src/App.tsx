@@ -18,14 +18,16 @@ import Dashboard from "./pages/Operator/Dashboard/Home";
 import ListPresensi from "./pages/Operator/Presence/Index";
 import AddPresence from "./pages/Operator/Presence/Add";
 import UserManagement from "./pages/Operator/Master/User/Index";
-import SettingManagement from "./pages/Operator/Master/Setting/Index";
+import SettingManagement from "./pages/Admin/Setting/Index";
 import LokasiManagement from "./pages/Operator/Master/Lokasi/Index";
 import LaporanManagement from "./pages/Operator/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
 import CalendarManagement from "./pages/Operator/Master/Calendar/Index";
 import DashboardAdmin from "./pages/Admin/Dashboard/Home";
 import CalendarManagementAdmin from "./pages/Admin/Master/Calendar/Index";
-import Setting from "./pages/Operator/Master/Setting/Index";
+import Setting from "./pages/Admin/Setting/Index";
+import DesaManagement from "./pages/Admin/Master/Desa/Index";
+import SubDistrictManagement from "./pages/Admin/Master/SubDistrict/Index";
 
 export default function App() {
   return (
@@ -56,7 +58,6 @@ export default function App() {
             </Route>
 
             <Route element={<AccessMiddleware access="operator"><AppLayout /></AccessMiddleware>} path="/operator">
-              {/* Menu */}
               <Route index element={<Dashboard />} />
 
               <Route path="presensi">
@@ -79,13 +80,18 @@ export default function App() {
                 <Route path="add" element={<AddPresence />} />
               </Route>
 
-              <Route path="master/user" element={<UserManagement />} />
-              <Route path="master/setting" element={<SettingManagement />} />
-              <Route path="master/lokasi" element={<LokasiManagement />} />
-              <Route path="master/calendar" element={<CalendarManagementAdmin />} />
               <Route path="laporan" element={<LaporanManagement />} />
 
-              <Route path="setting" element={<Setting  />} />
+              <Route path="master">
+                <Route path="user" element={<UserManagement />} />
+                <Route path="setting" element={<SettingManagement />} />
+                <Route path="lokasi" element={<LokasiManagement />} />
+                <Route path="calendar" element={<CalendarManagementAdmin />} />
+                <Route path="desa" element={<DesaManagement />} />
+                <Route path="sub-district" element={<SubDistrictManagement />} />
+              </Route>
+
+              <Route path="setting" element={<Setting />} />
             </Route>
           </Route>
 

@@ -1,15 +1,18 @@
 import { User } from "./UserInterface";
 import { Location } from "./LocationInterface";
-import { District } from "./DistrictInterface";
+import { SubDistrict } from "./SubDistrictInterface";
 
 export interface Village {
   id: string;
   name: string;
   address?: string;
-  districtId?: string;
+  subDistrictId?: string;
 
   // relations
   users?: User[];
   locations?: Location[];
-  district?: District;
-}
+  subDistrict?: SubDistrict;
+
+  user_count? :number;
+  location_count? :number;
+} 

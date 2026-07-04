@@ -107,3 +107,15 @@ export const saveDbUsers = (users: User[]) => {
 export const saveDbPresences = (presences: Presence[]) => {
   localStorage.setItem("admin_presences", JSON.stringify(presences));
 };
+
+export const getDbSettings = () => {
+  return {
+    inTimeLimit: localStorage.getItem("settings_in_time_limit") || "08:00",
+    outTimeLimit: localStorage.getItem("settings_out_time_limit") || "17:00",
+  };
+};
+
+export const saveDbSettings = (inTime: string, outTime: string) => {
+  localStorage.setItem("settings_in_time_limit", inTime);
+  localStorage.setItem("settings_out_time_limit", outTime);
+};

@@ -1,6 +1,6 @@
 import API from "../config/API";
 import { LocationAccess, LocationAccessCreate } from "../interface/LocationAccessInterface";
-import { Location } from "../interface/LocationInterface";
+import { Location, LocationCreate, LocationUpdate } from "../interface/LocationInterface";
 import { User } from "../interface/UserInterface";
 
 class LocationController {
@@ -14,13 +14,9 @@ class LocationController {
     }
   }
 
-  async getAccessAll(token: string): Promise<User[]> {
+  async getAccessAll(): Promise<User[]> {
     try {
-      const data = await API.get("/location/access/all", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const data = await API.get("/location/access/all");
       return data.data;
     } catch (e) {
       console.error(e);
@@ -28,13 +24,9 @@ class LocationController {
     }
   }
 
-  async getByAccess(token: string): Promise<LocationAccess[]> {
+  async getByAccess(): Promise<LocationAccess[]> {
     try {
-      const data = await API.get("/location/access", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const data = await API.get("/location/access");
       return data.data;
     } catch (e) {
       console.error(e);
@@ -43,7 +35,6 @@ class LocationController {
   }
 
   async check(
-    token: string,
     lat: number,
     lng: number,
     locationId: string,
@@ -55,11 +46,6 @@ class LocationController {
           lat: lat,
           lng: lng,
           locationId: locationId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         },
       );
       return data.data;
@@ -97,6 +83,42 @@ class LocationController {
     try {
       const data = await API.delete(`/location/access/${id}`,
       );
+      return data.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async create(data: LocationCreate): Promise<Location> {
+    try {
+      const response = await API.post("/location", data);
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async update(data: LocationUpdate): Promise<Location> {
+    try {
+      const response = await API.patch(`/location/${data.id}`, {
+        name: data.name,
+        lat: Number(data.lat),
+        lng: Number(data.lng),
+        radius: Number(data.radius),
+        villageId: data.villageId,
+      });
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async delete(id: string): Promise<any> {
+    try {
+      const data = await API.delete(`/location/${id}`);
       return data.data;
     } catch (e) {
       console.error(e);

@@ -45,9 +45,7 @@ function Presence() {
   const getLocations = async () => {
     try {
       setLoading(true);
-      const data = await locationController.getByAccess(
-        localStorage.getItem("token") || "",
-      );
+      const data = await locationController.getByAccess();
       setLocations(data);
     } catch (err: unknown) {
       catchHandle({ err, variant: "warning" });
@@ -67,7 +65,6 @@ function Presence() {
       const loc = await getLocation();
 
       const data = await locationController.check(
-        localStorage.getItem("token") || "",
         loc.lat,
         loc.lng,
         locationId,

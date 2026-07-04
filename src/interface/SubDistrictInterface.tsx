@@ -1,9 +1,9 @@
 import { Village } from "./VillageInterface";
 
-export interface District {
+export interface SubDistrict {
   id: string;
   name: string;
 
   // relations
-  Villages?: Village[];
+  villages?: Village[];
 }

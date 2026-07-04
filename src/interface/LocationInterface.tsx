@@ -11,7 +11,24 @@ export interface Location {
   villageId?: string;
 
   // relations
-  Village?: Village;
+  village?: Village;
   Presences?: Presence[];
   Users?: User[];
+}
+
+export interface LocationCreate {
+  name: string;
+  lat: number;
+  lng: number;
+  radius: number;
+  villageId: string;
+}
+
+export interface LocationUpdate {
+  id: string;
+  name?: string;
+  lat?: number;
+  lng?: number;
+  radius?: number;
+  villageId?: string;
 }

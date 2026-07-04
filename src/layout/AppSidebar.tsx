@@ -9,6 +9,8 @@ import {
   MapPin,
   CalendarDays,
   Settings,
+  Building,
+  Map,
 } from "lucide-react";
 import { useSidebar } from "../context/SidebarContext";
 import { HorizontaLDots } from "../icons";
@@ -63,7 +65,19 @@ const AppSidebar: React.FC = () => {
       icon: <CalendarDays />,
       name: "Calendar",
       path: `${basePath}/master/calendar`,
-    }
+    },
+    ...(isUserAdmin ? [
+      {
+        icon: <Building />,
+        name: "Desa",
+        path: `${basePath}/master/desa`,
+      },
+      {
+        icon: <Map />,
+        name: "Kecamatan",
+        path: `${basePath}/master/sub-district`,
+      }
+    ] : [])
   ];
 
   const navSetting: NavItem[] = [

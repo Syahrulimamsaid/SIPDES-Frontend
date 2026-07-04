@@ -3,7 +3,6 @@ import PageMeta from "../../../../components/common/PageMeta";
 import Button from "../../../../components/ui/button/Button";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "../../../../components/ui/table"
 import { User } from "../../../../interface/UserInterface";
-import { Village } from "../../../../interface/VillageInterface";
 import AddUserModal from "./Add";
 import EditUserModal from "./Edit";
 import DeleteUserModal from "./Delete";
@@ -24,7 +23,6 @@ export default function UserManagement() {
   const userController = new UserController();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [villages, setVillages] = useState<Village[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
   const [searchTerm, setSearchTerm] = useState("");
