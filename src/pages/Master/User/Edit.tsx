@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import Button from "../../../../components/ui/button/Button";
-import Input from "../../../../components/form/input/InputField";
-import Select from "../../../../components/form/Select";
-import { Modal } from "../../../../components/ui/modal";
-import { User, UserCreate } from "../../../../interface/UserInterface";
-import UserController from "../../../../controller/UserController";
-import { catchHandle } from "../../../../helpers/catchHandle";
-import { Toast } from "../../../../components/ui/alert/Toast";
+import Button from "../../../components/ui/button/Button";
+import Input from "../../../components/form/input/InputField";
+import Select from "../../../components/form/Select";
+import { Modal } from "../../../components/ui/modal";
+import { User, UserCreate } from "../../../interface/UserInterface";
+import UserController from "../../../controller/UserController";
+import VillageController from "../../../controller/VillageController";
+import { Village } from "../../../interface/VillageInterface";
+import { catchHandle } from "../../../helpers/catchHandle";
+import { Toast } from "../../../components/ui/alert/Toast";
 import { Eye, EyeOff } from "lucide-react";
 
 interface EditUserModalProps {
@@ -23,14 +25,18 @@ export default function EditUserModal({
   onSuccess,
 }: EditUserModalProps) {
   const userController = new UserController();
+  const villageController = new VillageController();
 
+  const isAdmin = localStorage.getItem("role") === "admin";
+
+  const [villages, setVillages] = useState<Village[]>([]);
   const [user, setUser] = useState<UserCreate>({
     id: "",
     phone_number: "",
     password: "",
-    fullname: "",
-    role: "umum",
-    villageId: localStorage.getItem("village") || "",
+    fullname: "", 
+    role: "",
+    villageId: "",
   });
 
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -42,6 +48,15 @@ export default function EditUserModal({
     { value: "operator", label: "Operator (Administrator)" },
   ];
 
+  const getVillages = async () => {
+    try {
+      const data = await villageController.get();
+      setVillages(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (isOpen && userData) {
       setUser({
@@ -49,12 +64,16 @@ export default function EditUserModal({
         phone_number: userData.phone_number || "",
         password: "",
         fullname: userData.fullname || "",
-        role: userData.role || "umum",
-        villageId: userData.villageId || localStorage.getItem("village") || "",
+        role: userData.role,
+        villageId: userData.village?.id || "",
       });
       setConfirmPassword("");
       setShowPassword(false);
       setShowConfirmPassword(false);
+
+      if (isAdmin) {
+        getVillages();
+      }
     }
   }, [isOpen, userData]);
 
@@ -73,6 +92,11 @@ export default function EditUserModal({
 
     if (user.password && user.password !== confirmPassword) {
       Toast({ message: "Password dan konfirmasi password tidak cocok!", variant: 'warning' });
+      return;
+    }
+
+    if (isAdmin && !user.villageId) {
+      Toast({ message: "Desa Penugasan wajib dipilih!", variant: 'warning' });
       return;
     }
 
@@ -131,12 +155,22 @@ export default function EditUserModal({
             <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
               Desa Penugasan
             </label>
-            <Input
-              type="text"
-              name="villageId"
-              value={user.villageId}
-              disabled
-            />
+            {isAdmin ? (
+              <Select
+                options={villages.map((v) => ({ value: v.id, label: v.name }))}
+                placeholder="Pilih Desa"
+                name="villageId"
+                onChange={(val) => setUser({ ...user, villageId: val })}
+                defaultValue={user.villageId}
+              />
+            ) : (
+              <Input
+                type="text"
+                name="villageId"
+                value={userData?.village?.name || localStorage.getItem("village") || ""}
+                disabled
+              />
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -149,6 +183,7 @@ export default function EditUserModal({
               name="role"
               onChange={(val) => setUser({ ...user, role: val })}
               defaultValue={user.role}
+              disabled={!isAdmin}
             />
           </div>
 

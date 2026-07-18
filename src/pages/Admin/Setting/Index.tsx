@@ -66,9 +66,21 @@ export default function Setting() {
     }
   }
 
+  const getSetting = async () => {
+    try {
+      const data = await settingController.get();
+      setInTimeLimit(data.in_time);
+      setOutTimeLimit(data.out_time);
+    }
+    catch (err) {
+      catchHandle({ err, variant: 'error' });
+    }
+  }
+
   useEffect(() => {
     getLocation();
     getVillage();
+    getSetting();
   }, []);
 
   useEffect(() => {

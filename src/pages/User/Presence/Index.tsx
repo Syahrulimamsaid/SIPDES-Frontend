@@ -90,6 +90,7 @@ function Presence() {
 
   const handlePresence = async (data: LocationAccess) => {
     const locationAccessId = data.id || "";
+    const locationId = data.location?.id || "";
 
     try {
       const presence = await presenceController.presence(
@@ -104,6 +105,12 @@ function Presence() {
       Toast({
         message: `Presensi ${presence.type} berhasil`,
         variant: "success",
+      });
+
+      setValidLocation((prev) => {
+        const updated = { ...prev };
+        delete updated[locationId];
+        return updated;
       });
 
       getLocations();
@@ -274,6 +281,18 @@ function Presence() {
                     </div>
                   );
                 })}
+
+              {!loading && (!locations || locations.length === 0) && (
+                <div className="col-span-full text-center py-12 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm w-full">
+                  <MapPin className="mx-auto size-12 text-gray-400 dark:text-gray-600 mb-3" />
+                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Tidak ada lokasi presensi
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Anda belum diberikan akses ke lokasi presensi manapun.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

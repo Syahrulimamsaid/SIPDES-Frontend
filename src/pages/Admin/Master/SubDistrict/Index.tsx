@@ -7,7 +7,7 @@ import SubDistrictController from "../../../../controller/SubDistrictController"
 import { catchHandle } from "../../../../helpers/catchHandle";
 import AddSubDistrictModal from "./Add";
 import EditSubDistrictModal from "./Edit";
-import DeleteSubDistrictModal from "./delete";
+import DeleteSubDistrictModal from "./Delete";
 import {
   Search,
   Plus,

@@ -14,7 +14,7 @@ export interface Presence {
   in_long?: number;
   out_lat?: number;
   out_long?: number;
-  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti" | "pulang" | "";
+  status: "hadir" | "masuk" | "terlambat" | "alpa" | "cuti" | "pulang" | "libur" | "";
 
   user?: User;
   location_access?: LocationAccess;

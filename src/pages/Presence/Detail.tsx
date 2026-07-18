@@ -1,9 +1,9 @@
 
-import { Modal } from "../../../components/ui/modal";
-import Button from "../../../components/ui/button/Button";
+import { Modal } from "../../components/ui/modal";
+import Button from "../../components/ui/button/Button";
 import { Compass, LogIn, LogOut } from "lucide-react";
-import { Presence } from "../../../interface/PresenceInterface";
-import Map from "../../../components/custom/Map";
+import { Presence } from "../../interface/PresenceInterface";
+import Map from "../../components/custom/Map";
 
 interface DetailModalProps {
   isOpen: boolean;

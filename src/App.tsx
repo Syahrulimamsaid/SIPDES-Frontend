@@ -15,12 +15,12 @@ import About from "./pages/About";
 import AppLayout from "./layout/AppLayout";
 import AccessMiddleware from "./Middleware/AccessMiddleware";
 import Dashboard from "./pages/Operator/Dashboard/Home";
-import ListPresensi from "./pages/Operator/Presence/Index";
-import AddPresence from "./pages/Operator/Presence/Add";
-import UserManagement from "./pages/Operator/Master/User/Index";
+import ListPresensi from "./pages/Presence/Index";
+import AddPresence from "./pages/Presence/Add";
+import UserManagement from "./pages/Master/User/Index";
 import SettingManagement from "./pages/Admin/Setting/Index";
-import LokasiManagement from "./pages/Operator/Master/Lokasi/Index";
-import LaporanManagement from "./pages/Operator/Laporan/Index";
+import LokasiManagement from "./pages/Master/Lokasi/Index";
+import LaporanManagement from "./pages/Admin/Laporan/Index";
 import Notification from "./pages/User/Presence/Notification/Index";
 import CalendarManagement from "./pages/Operator/Master/Calendar/Index";
 import DashboardAdmin from "./pages/Admin/Dashboard/Home";
@@ -28,6 +28,9 @@ import CalendarManagementAdmin from "./pages/Admin/Master/Calendar/Index";
 import Setting from "./pages/Admin/Setting/Index";
 import DesaManagement from "./pages/Admin/Master/Desa/Index";
 import SubDistrictManagement from "./pages/Admin/Master/SubDistrict/Index";
+import Support from "./pages/Support";
+import ProfileDesktop from "./pages/Profile/ProfileDesktop";
+import ChangePasswordDesktop from "./pages/Profile/ChangePasswordDesktop";
 
 export default function App() {
   return (
@@ -55,6 +58,7 @@ export default function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/profile/change-password" element={<ChangePassword />} />
               <Route path="/about" element={<About />} />
+              <Route path="/support" element={<Support />} />
             </Route>
 
             <Route element={<AccessMiddleware access="operator"><AppLayout /></AccessMiddleware>} path="/operator">
@@ -70,6 +74,9 @@ export default function App() {
               <Route path="master/lokasi" element={<LokasiManagement />} />
               <Route path="master/calendar" element={<CalendarManagement />} />
               <Route path="laporan" element={<LaporanManagement />} />
+              <Route path="profile" element={<ProfileDesktop />} />
+              <Route path="profile/change-password" element={<ChangePasswordDesktop />} />
+              <Route path="support" element={<Support />} />
             </Route>
 
             <Route element={<AccessMiddleware access="admin"><AppLayout /></AccessMiddleware>} path="/admin">
@@ -92,6 +99,9 @@ export default function App() {
               </Route>
 
               <Route path="setting" element={<Setting />} />
+              <Route path="profile" element={<ProfileDesktop />} />
+              <Route path="profile/change-password" element={<ChangePasswordDesktop />} />
+              <Route path="support" element={<Support />} />
             </Route>
           </Route>
 

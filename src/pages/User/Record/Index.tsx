@@ -119,7 +119,7 @@ function Record() {
             {!loading &&
               records.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.id ?? item.date}
                   className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm 
                 hover:shadow-lg hover:border-blue-200 dark:hover:border-blue-900 hover:-translate-y-1 transition-all duration-200"
                 >
@@ -137,8 +137,8 @@ function Record() {
                     <span
                       className={`text-[10px] px-2 py-1 rounded-full font-medium ${statusColor(item.status)}`}
                     >
-                      {item.status.charAt(0).toUpperCase() +
-                        item.status.slice(1).toLowerCase()}
+                      {(item.status) ? item.status.charAt(0).toUpperCase() +
+                        item.status.slice(1).toLowerCase() : 'Belum Prensensi'}
                     </span>
                   </div>
 
@@ -176,12 +176,13 @@ function Record() {
                       </span>
                     </div>
 
-                    <button
-                      className="flex items-center gap-1 text-blue-600 hover:text-indigo-600 dark:text-blue-400 dark:hover:text-indigo-400 transition cursor-pointer"
-                      onClick={() => navigate(`/record/detail/${item.id}`)}
-                    >
-                      Lihat
-                    </button>
+                    {item.status !== 'libur' && item.status !== ''  ?
+                      <button
+                        className="flex items-center gap-1 text-blue-600 hover:text-indigo-600 dark:text-blue-400 dark:hover:text-indigo-400 transition cursor-pointer"
+                        onClick={() => navigate(`/record/detail/${item.id}`)}
+                      >
+                        Lihat
+                      </button> : ''}
                   </div>
                 </div>
               ))}

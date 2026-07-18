@@ -1,10 +1,10 @@
-import Button from "../../../../components/ui/button/Button";
-import { Modal } from "../../../../components/ui/modal";
-import { User } from "../../../../interface/UserInterface";
+import Button from "../../../components/ui/button/Button";
+import { Modal } from "../../../components/ui/modal";
+import { User } from "../../../interface/UserInterface";
 import { Trash2 } from "lucide-react";
-import { catchHandle } from "../../../../helpers/catchHandle";
-import UserController from "../../../../controller/UserController";
-import { Toast } from "../../../../components/ui/alert/Toast";
+import { catchHandle } from "../../../helpers/catchHandle";
+import UserController from "../../../controller/UserController";
+import { Toast } from "../../../components/ui/alert/Toast";
 
 interface DeleteUserModalProps {
   isOpen: boolean;

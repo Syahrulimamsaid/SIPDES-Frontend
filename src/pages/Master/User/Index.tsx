@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
-import PageMeta from "../../../../components/common/PageMeta";
-import Button from "../../../../components/ui/button/Button";
-import { Table, TableHeader, TableBody, TableRow, TableCell } from "../../../../components/ui/table"
-import { User } from "../../../../interface/UserInterface";
+import PageMeta from "../../../components/common/PageMeta";
+import Button from "../../../components/ui/button/Button";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TablePagination } from "../../../components/ui/table"
+import { User } from "../../../interface/UserInterface";
 import AddUserModal from "./Add";
 import EditUserModal from "./Edit";
 import DeleteUserModal from "./Delete";
+import ResetDeviceModal from "./ResetDevice";
 import {
   Search,
   Plus,
   Edit2,
   Trash2,
   UserCheck,
-  Shield,
   Phone,
   Building,
+  Smartphone,
 } from "lucide-react";
-import { catchHandle } from "../../../../helpers/catchHandle";
-import UserController from "../../../../controller/UserController";
+import { catchHandle } from "../../../helpers/catchHandle";
+import UserController from "../../../controller/UserController";
 
-export default function UserManagement() {  
+export default function UserManagement() {
   const userController = new UserController();
 
   const [users, setUsers] = useState<User[]>([]);
@@ -30,10 +31,11 @@ export default function UserManagement() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isResetOpen, setIsResetOpen] = useState(false);
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const getUser = async() => {
+  const getUser = async () => {
     try {
       const data = await userController.get();
       setUsers(data);
@@ -74,6 +76,11 @@ export default function UserManagement() {
   const handleDeleteClick = (user: User) => {
     setCurrentUser(user);
     setIsDeleteOpen(true);
+  };
+
+  const handleResetClick = (user: User) => {
+    setCurrentUser(user);
+    setIsResetOpen(true);
   };
 
   return (
@@ -160,24 +167,28 @@ export default function UserManagement() {
                       </TableCell>
                       <TableCell className="px-6 py-4">
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${user.role === "operator"
-                            ? "bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400"
-                            : "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full capitalize ${user.role === "admin"
+                            ? "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400"
+                            : user.role === "operator"
+                              ? "bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400"
+                              : "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
                             }`}
                         >
-                          {user.role === "operator" ? (
-                            <>
-                              <Shield size={12} /> Operator
-                            </>
-                          ) : (
-                            <>
-                              <UserCheck size={12} /> Umum
-                            </>
-                          )}
+                          <UserCheck size={12} /> {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                         </span>
                       </TableCell>
                       <TableCell className="px-6 py-4">
                         <div className="flex items-center justify-center gap-2">
+                          {user.role == 'umum' ?
+                            <button
+                              onClick={() => handleResetClick(user)}
+                              className="p-1.5 rounded-lg text-orange-500 hover:text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:text-orange-300 dark:hover:bg-orange-500/10 transition-colors"
+                              title="Reset Device"
+                            >
+                              <Smartphone size={16} />
+                            </button>
+                            : ''}
+
                           <button
                             onClick={() => handleEditClick(user)}
                             className="p-1.5 rounded-lg text-gray-500 hover:text-brand-500 hover:bg-brand-50 dark:text-gray-400 dark:hover:text-brand-400 dark:hover:bg-brand-500/10 transition-colors"
@@ -185,6 +196,7 @@ export default function UserManagement() {
                           >
                             <Edit2 size={16} />
                           </button>
+
                           <button
                             onClick={() => handleDeleteClick(user)}
                             className="p-1.5 rounded-lg text-gray-500 hover:text-red-500 hover:bg-red-50 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-red-500/10 transition-colors"
@@ -206,6 +218,14 @@ export default function UserManagement() {
               </TableBody>
             </Table>
           </div>
+
+          {users.length > 0 && (
+            <TablePagination
+              data={users}
+              defaultItemsPerPage={10}
+              onPageDataChange={setFilteredUsers}
+            />
+          )}
         </div>
 
         <AddUserModal
@@ -224,6 +244,13 @@ export default function UserManagement() {
         <DeleteUserModal
           isOpen={isDeleteOpen}
           onClose={() => setIsDeleteOpen(false)}
+          user={currentUser}
+          onSuccess={getUser}
+        />
+
+        <ResetDeviceModal
+          isOpen={isResetOpen}
+          onClose={() => setIsResetOpen(false)}
           user={currentUser}
           onSuccess={getUser}
         />

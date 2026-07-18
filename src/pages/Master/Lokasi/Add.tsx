@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Button from "../../../../components/ui/button/Button";
-import Input from "../../../../components/form/input/InputField";
-import Select from "../../../../components/form/Select";
-import { Modal } from "../../../../components/ui/modal";
-import { User } from "../../../../interface/UserInterface";
-import { Location } from "../../../../interface/LocationInterface";
-import LocationController from "../../../../controller/LocationController";
-import { catchHandle } from "../../../../helpers/catchHandle";
-import { Toast } from "../../../../components/ui/alert/Toast";
-import { LocationAccessCreate } from "../../../../interface/LocationAccessInterface";
+import Button from "../../../components/ui/button/Button";
+import Input from "../../../components/form/input/InputField";
+import Select from "../../../components/form/Select";
+import { Modal } from "../../../components/ui/modal";
+import { User } from "../../../interface/UserInterface";
+import { Location } from "../../../interface/LocationInterface";
+import LocationController from "../../../controller/LocationController";
+import { catchHandle } from "../../../helpers/catchHandle";
+import { Toast } from "../../../components/ui/alert/Toast";
+import { LocationAccessCreate } from "../../../interface/LocationAccessInterface";
 
 interface AddAccessModalProps {
   isOpen: boolean;

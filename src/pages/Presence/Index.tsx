@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import PageMeta from "../../../components/common/PageMeta";
-import Button from "../../../components/ui/button/Button";
-import Select from "../../../components/form/Select";
-import { Presence } from "../../../interface/PresenceInterface";
-import PresenceController from "../../../controller/PresenceController";
+import PageMeta from "../../components/common/PageMeta";
+import Button from "../../components/ui/button/Button";
+import Select from "../../components/form/Select";
+import { Presence } from "../../interface/PresenceInterface";
+import PresenceController from "../../controller/PresenceController";
 import {
   Search,
   Edit2,
@@ -13,20 +13,20 @@ import {
   X,
   Plus,
 } from "lucide-react";
-import DatePicker from "../../../components/form/date-picker";
+import DatePicker from "../../components/form/date-picker";
 import {
   Table,
   TableHeader,
   TableBody,
   TableRow,
   TableCell,
-} from "../../../components/ui/table";
+} from "../../components/ui/table";
 import EditModal from "./Edit";
 import DetailModal from "./Detail";
 import DeleteModal from "./Delete";
-import { statusColor } from "../../../helpers/statusColor";
-import { catchHandle } from "../../../helpers/catchHandle";
-import { formatTime } from "../../../helpers/formatTime";
+import { statusColor } from "../../helpers/statusColor";
+import { catchHandle } from "../../helpers/catchHandle";
+import { formatTime } from "../../helpers/formatTime";
 
 export default function List() {
   const navigate = useNavigate();

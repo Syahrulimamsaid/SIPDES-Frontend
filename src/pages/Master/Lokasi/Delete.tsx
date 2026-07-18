@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Button from "../../../../components/ui/button/Button";
-import { Modal } from "../../../../components/ui/modal";
-import LocationController from "../../../../controller/LocationController";
-import { catchHandle } from "../../../../helpers/catchHandle";
-import { Toast } from "../../../../components/ui/alert/Toast";
+import Button from "../../../components/ui/button/Button";
+import { Modal } from "../../../components/ui/modal";
+import LocationController from "../../../controller/LocationController";
+import { catchHandle } from "../../../helpers/catchHandle";
+import { Toast } from "../../../components/ui/alert/Toast";
 import { Trash2 } from "lucide-react";
 
 interface DeleteAccessModalProps {

@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import Button from "../../../../components/ui/button/Button";
-import Input from "../../../../components/form/input/InputField";
-import { Modal } from "../../../../components/ui/modal";
-import { UserCreate } from "../../../../interface/UserInterface";
-import UserController from "../../../../controller/UserController";
-import { Toast } from "../../../../components/ui/alert/Toast";
-import { catchHandle } from "../../../../helpers/catchHandle";
+import Button from "../../../components/ui/button/Button";
+import Input from "../../../components/form/input/InputField";
+import Select from "../../../components/form/Select";
+import { Modal } from "../../../components/ui/modal";
+import { UserCreate } from "../../../interface/UserInterface";
+import UserController from "../../../controller/UserController";
+import VillageController from "../../../controller/VillageController";
+import { Village } from "../../../interface/VillageInterface";
+import { Toast } from "../../../components/ui/alert/Toast";
+import { catchHandle } from "../../../helpers/catchHandle";
 import { Eye, EyeOff } from "lucide-react";
 
 interface AddUserModalProps {
@@ -20,17 +23,35 @@ export default function AddUserModal({
   onSuccess,
 }: AddUserModalProps) {
   const userController = new UserController();
+  const villageController = new VillageController();
 
+  const isAdmin = localStorage.getItem("role") === "admin";
+
+  const [villages, setVillages] = useState<Village[]>([]);
   const [user, setUser] = useState<UserCreate>({
     phone_number: "",
     password: "",
     fullname: "",
-    role: "Umum",
-    villageId: localStorage.getItem("village") || "",
+    role: "umum",
+    villageId: "",
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const roleOptions = [
+    { value: "umum", label: "Umum (Perangkat Desa)" },
+    { value: "operator", label: "Operator (Administrator)" },
+  ];
+
+  const getVillages = async () => {
+    try {
+      const data = await villageController.get();
+      setVillages(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -38,12 +59,16 @@ export default function AddUserModal({
         phone_number: "",
         password: "",
         fullname: "",
-        role: "Umum",
-        villageId: localStorage.getItem("village") || "",
+        role: "umum",
+        villageId: isAdmin ? "" : (localStorage.getItem("village") || ""),
       });
       setConfirmPassword("");
       setShowPassword(false);
       setShowConfirmPassword(false);
+
+      if (isAdmin) {
+        getVillages();
+      }
     }
   }, [isOpen]);
 
@@ -58,15 +83,33 @@ export default function AddUserModal({
       return;
     }
 
+    if (!user.password || user.password.trim() === "") {
+      Toast({ message: "Password wajib diisi!", variant: 'warning' });
+      return;
+    }
+
+    if (!confirmPassword || confirmPassword.trim() === "") {
+      Toast({ message: "Konfirmasi password wajib diisi!", variant: 'warning' });
+      return;
+    }
+
     if (user.password !== confirmPassword) {
       Toast({ message: "Password dan konfirmasi password tidak cocok!", variant: 'warning' });
       return;
     }
 
     try {
-      user.role = 'umum';
-      user.villageId = '';
-      await userController.create(user);
+      const payload = { ...user };
+      if (isAdmin) {
+        if (!payload.villageId) {
+          Toast({ message: "Desa Penugasan wajib dipilih!", variant: 'warning' });
+          return;
+        }
+      } else {
+        payload.role = 'umum';
+        payload.villageId = '';
+      }
+      await userController.create(payload);
 
       Toast({ message: "User berhasil ditambahkan!", variant: 'success' });
       onSuccess();
@@ -117,24 +160,44 @@ export default function AddUserModal({
             <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
               Desa Penugasan
             </label>
-            <Input
-              type="text"
-              name="villageId"
-              value={user.villageId}
-              disabled
-            />
+            {isAdmin ? (
+              <Select
+                options={villages.map((v) => ({ value: v.id, label: v.name }))}
+                placeholder="Pilih Desa"
+                name="villageId"
+                onChange={(val) => setUser({ ...user, villageId: val })}
+                defaultValue={user.villageId}
+              />
+            ) : (
+              <Input
+                type="text"
+                name="villageId"
+                value={user.villageId}
+                disabled
+              />
+            )}
           </div>
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
               Role
             </label>
-            <Input
-              type="text"
-              name="role"
-              value={user.role}
-              disabled
-            />
+            {isAdmin ? (
+              <Select
+                options={roleOptions}
+                placeholder="Pilih Role"
+                name="role"
+                onChange={(val) => setUser({ ...user, role: val })}
+                defaultValue={user.role}
+              />
+            ) : (
+              <Input
+                type="text"
+                name="role"
+                value={user.role === "umum" ? "Umum" : user.role === "operator" ? "Operator" : user.role}
+                disabled
+              />
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -145,9 +208,10 @@ export default function AddUserModal({
               <Input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Kosongkan untuk default '123456'"
+                placeholder="Masukkan password akun"
                 value={user.password}
                 onChange={handleChange}
+                required
               />
               <button
                 type="button"
@@ -170,6 +234,7 @@ export default function AddUserModal({
                 placeholder="Masukkan kembali password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                required
               />
               <button
                 type="button"

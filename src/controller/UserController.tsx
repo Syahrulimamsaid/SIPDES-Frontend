@@ -45,6 +45,17 @@ class UserController {
       throw e;
     }
   }
+
+  async resetDevice(id: string): Promise<any> {
+    try {
+      const response = await API.post(`/user/reset/${id}/device`);
+
+      return response.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
 }
 
 export default UserController;

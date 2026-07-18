@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Modal } from "../../../components/ui/modal";
-import Button from "../../../components/ui/button/Button";
+import { Modal } from "../../components/ui/modal";
+import Button from "../../components/ui/button/Button";
 import { Trash2 } from "lucide-react";
-import { Presence } from "../../../interface/PresenceInterface";
-import PresenceController from "../../../controller/PresenceController";
-import { Toast } from "../../../components/ui/alert/Toast";
-import { catchHandle } from "../../../helpers/catchHandle";
+import { Presence } from "../../interface/PresenceInterface";
+import PresenceController from "../../controller/PresenceController";
+import { Toast } from "../../components/ui/alert/Toast";
+import { catchHandle } from "../../helpers/catchHandle";
 
 interface DeleteModalProps {
   isOpen: boolean;

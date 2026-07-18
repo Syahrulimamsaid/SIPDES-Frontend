@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "../../../components/ui/modal";
-import Select from "../../../components/form/Select";
-import Button from "../../../components/ui/button/Button";
+import { Modal } from "../../components/ui/modal";
+import Select from "../../components/form/Select";
+import Button from "../../components/ui/button/Button";
 import { User as UserIcon } from "lucide-react";
-import { Presence, PresenceUpdate } from "../../../interface/PresenceInterface";
-import TimePicker from "../../../components/form/time-picker";
-import PresenceController from "../../../controller/PresenceController";
-import { Toast } from "../../../components/ui/alert/Toast";
-import { catchHandle } from "../../../helpers/catchHandle";
+import { Presence, PresenceUpdate } from "../../interface/PresenceInterface";
+import TimePicker from "../../components/form/time-picker";
+import PresenceController from "../../controller/PresenceController";
+import { Toast } from "../../components/ui/alert/Toast";
+import { catchHandle } from "../../helpers/catchHandle";
 
 interface EditModalProps {
   isOpen: boolean;

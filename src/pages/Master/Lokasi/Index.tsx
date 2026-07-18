@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import PageMeta from "../../../../components/common/PageMeta";
-import Button from "../../../../components/ui/button/Button";
-import { Table, TableHeader, TableBody, TableRow, TableCell } from "../../../../components/ui/table";
-import { LocationAccess } from "../../../../interface/LocationAccessInterface";
-import { User } from "../../../../interface/UserInterface";
-import LocationController from "../../../../controller/LocationController";
-import { catchHandle } from "../../../../helpers/catchHandle";
+import { useEffect, useState, useMemo } from "react";
+import PageMeta from "../../../components/common/PageMeta";
+import Button from "../../../components/ui/button/Button";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TablePagination } from "../../../components/ui/table";
+import { LocationAccess } from "../../../interface/LocationAccessInterface";
+import { User } from "../../../interface/UserInterface";
+import LocationController from "../../../controller/LocationController";
+import { catchHandle } from "../../../helpers/catchHandle";
 import AddAccessModal from "./Add";
 import DeleteAccessModal from "./Delete";
 import {
@@ -22,8 +22,6 @@ export default function LokasiManagement() {
 
   const [userAccess, setUserAccess] = useState<User[]>([]);
 
-  // const [filteredAccessList, setFilteredAccessList] = useState<LocationAccess[]>([]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -33,12 +31,31 @@ export default function LokasiManagement() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentAccess, setCurrentAccess] = useState<LocationAccess | null>(null);
 
-  const token = localStorage.getItem("token") || "";
+  const [paginatedUsers, setPaginatedUsers] = useState<User[]>([]);
+
+  const filteredUsers = useMemo(() => {
+    if (searchTerm.trim() === "") {
+      return userAccess;
+    }
+    const q = searchTerm.toLowerCase();
+    return userAccess.filter(
+      (user) =>
+        (user.fullname || "").toLowerCase().includes(q) ||
+        (user.phone_number || "").includes(q) ||
+        (user.village?.name || "").toLowerCase().includes(q) ||
+        (user.location_access || []).some(
+          (acc) =>
+            (acc.location?.name || "").toLowerCase().includes(q) ||
+            (acc.description || "").toLowerCase().includes(q)
+        )
+    );
+  }, [userAccess, searchTerm]);
+
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await locationController.getAccessAll(token);
+      const data = await locationController.getAccessAll();
       setUserAccess(data);
     } catch (err) {
       catchHandle({ err, variant: "error" });
@@ -50,23 +67,6 @@ export default function LokasiManagement() {
   useEffect(() => {
     loadData();
   }, []);
-
-  // useEffect(() => {
-  //   if (searchTerm.trim() === "") {
-  //     setFilteredAccessList(userAccess.flatMap((user) => user.location_access || []));
-  //   } else {
-  //     const q = searchTerm.toLowerCase();
-  //     setFilteredAccessList(
-  //       userAccess.flatMap((user) => user.location_access || []).filter(
-  //         (acc) =>
-  //           (acc.user?.fullname || "").toLowerCase().includes(q) ||
-  //           (acc.user?.phone_number || "").includes(q) ||
-  //           (acc.location?.name || "").toLowerCase().includes(q) ||
-  //           (acc.description || "").toLowerCase().includes(q)
-  //       )
-  //     );
-  //   }
-  // }, [userAccess, searchTerm]);
 
   const handleAdd = (userId: string) => {
     const selectedUser = userAccess.find((u) => u.id === userId) || null;
@@ -134,8 +134,8 @@ export default function LokasiManagement() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ) : userAccess.length > 0 ? (
-                  userAccess.map((user) => (
+                ) : paginatedUsers.length > 0 ? (
+                  paginatedUsers.map((user) => (
                     <TableRow
                       key={user.id}
                       className="flex flex-col md:table-row hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors divide-y divide-gray-100 dark:divide-gray-800/60 md:divide-y-0"
@@ -225,13 +225,23 @@ export default function LokasiManagement() {
                 ) : (
                   <TableRow className="flex flex-col md:table-row">
                     <TableCell colSpan={2} className="px-6 py-12 text-center text-gray-400 dark:text-gray-600 block md:table-cell">
-                      Tidak ada data hak akses lokasi yang terdaftar.
+                      {searchTerm.trim() !== ""
+                        ? "Tidak ada data hak akses lokasi yang sesuai dengan pencarian."
+                        : "Tidak ada data hak akses lokasi yang terdaftar."}
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </div>
+
+          {userAccess.length > 0 && (
+            <TablePagination
+              data={filteredUsers}
+              defaultItemsPerPage={10}
+              onPageDataChange={setPaginatedUsers}
+            />
+          )}
         </div>
 
         <AddAccessModal

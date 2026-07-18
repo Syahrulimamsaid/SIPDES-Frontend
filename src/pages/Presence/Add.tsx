@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import PageMeta from "../../../components/common/PageMeta";
-import Button from "../../../components/ui/button/Button";
-import Select from "../../../components/form/Select";
-import DatePicker from "../../../components/form/date-picker";
-import TimePicker from "../../../components/form/time-picker";
-import PresenceController from "../../../controller/PresenceController";
-import UserController from "../../../controller/UserController";
-import { Toast } from "../../../components/ui/alert/Toast";
-import { catchHandle } from "../../../helpers/catchHandle";
-import { User } from "../../../interface/UserInterface";
-import { Location } from "../../../interface/LocationInterface";
+import PageMeta from "../../components/common/PageMeta";
+import Button from "../../components/ui/button/Button";
+import Select from "../../components/form/Select";
+import DatePicker from "../../components/form/date-picker";
+import TimePicker from "../../components/form/time-picker";
+import PresenceController from "../../controller/PresenceController";
+import UserController from "../../controller/UserController";
+import { Toast } from "../../components/ui/alert/Toast";
+import { catchHandle } from "../../helpers/catchHandle";
+import { User } from "../../interface/UserInterface";
+import { Location } from "../../interface/LocationInterface";
 import { ArrowLeft, User as UserIcon, Clock, Compass } from "lucide-react";
-import DropDownSearch from "../../../components/form/input/DropDownSearch";
-import LocationController from "../../../controller/LocationController";
-import { LocationAccess } from "../../../interface/LocationAccessInterface";
-import Map from "../../../components/custom/Map";
+import DropDownSearch from "../../components/form/input/DropDownSearch";
+import LocationController from "../../controller/LocationController";
+import { LocationAccess } from "../../interface/LocationAccessInterface";
+import Map from "../../components/custom/Map";
 
 export default function AddPresence() {
   const navigate = useNavigate();
