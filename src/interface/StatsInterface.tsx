@@ -2,6 +2,7 @@ export interface Stats {
   user_total: number;
   location_total: number;
   village_name: string;
+  village_total: number;
 }
 
 export interface StatsPresence {

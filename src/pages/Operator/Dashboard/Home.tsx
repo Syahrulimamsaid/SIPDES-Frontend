@@ -27,10 +27,10 @@ export default function Home() {
   const presenceController = new PresenceController();
   const globalController = new GlobalController();
 
-  const [stats, setStats] = useState<Stats>({ user_total: 0, location_total: 0, village_name: "-" });
+  const [stats, setStats] = useState<Stats>({ user_total: 0, location_total: 0, village_name: "-", village_total: 0 });
   const [statsPresence, setStatsPresence] = useState<StatsPresence>({
     presence_total: 0, presence_user_total: 0, hadir_total: 0, terlambat_total: 0, belum_absen_total: 0,
-    user_terlambat_total: 0, alpha_total: 0,
+    user_terlambat_total: 0, alpha_total: 0, presentase_hadir: 0,
     presence_status: [{ bulan: "", tepat_waktu: 0, terlambat: 0 }]
   });
   const [presences, setPresences] = useState<Presence[]>([]);
@@ -394,6 +394,12 @@ export default function Home() {
                         </TableCell>
                         <TableCell className="px-4 py-3.5">
                           {formatDate(pres.date ?? "")}
+                        </TableCell>
+                        <TableCell className="px-4 py-3.5">
+                          <div className="flex items-center gap-1.5">
+                            <Clock size={14} className="text-gray-400" />
+                            {formatTime(pres.in ?? "") || "-"}
+                          </div>
                         </TableCell>
                         <TableCell className="px-4 py-3.5">
                           <div className="flex items-center gap-1.5">
